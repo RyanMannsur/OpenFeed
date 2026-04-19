@@ -1,0 +1,16 @@
+.article-card {
+    transition: transform 0.2s ease-in-out;
+}
+.article-card:hover {
+    transform: translateY(-2px);
+}
+.placeholder-img {
+    min-height: 140px;
+    border-radius: 12px;
+}
+.text-truncate-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}

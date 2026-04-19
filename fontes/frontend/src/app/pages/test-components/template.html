@@ -1,0 +1,108 @@
+<div class="container py-5">
+  <h2 class="mb-5 border-bottom pb-3">Showcase de Componentes</h2>
+
+  <div class="row mb-5">
+    <div class="col-12">
+      <h4>Botões</h4>
+      <div class="d-flex flex-wrap gap-3 mt-3">
+        <app-button variant="primary">Primary</app-button>
+        <app-button variant="secondary">Secondary</app-button>
+        <app-button variant="dark">Dark</app-button>
+        <app-button variant="outline">Outline</app-button>
+        <app-button variant="text">Text Button</app-button>
+        <app-button variant="dark" [disabled]="true">Disabled</app-button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-5">
+    <div class="col-md-6">
+      <h4>Inputs & Form</h4>
+      <app-form (onSubmit)="submitTeste($event)">
+        <app-input type="text" label="Basic Text" placeholder="Value" [(ngModel)]="textVal" name="textVal"></app-input>
+        <app-input type="search" placeholder="Search..." icon="search"></app-input>
+        <app-input type="password" label="Password" placeholder="Senha..." [(ngModel)]="passVal" name="passVal"></app-input>
+        <app-input type="date" label="Inicio" placeholder="Value"></app-input>
+        <app-select label="Categoria (app-select)" placeholder="Selecione Categoria..." [options]="selectOptions" [(ngModel)]="selectVal" name="selectVal"></app-select>
+        <app-input type="textarea" label="Corpo do artigo" placeholder="Texto livre..."></app-input>
+        
+        <app-button variant="dark" type="submit" [block]="true">Testar Submit</app-button>
+      </app-form>
+    </div>
+
+    <div class="col-md-6 border-start ps-md-4 mt-5 mt-md-0">
+      <h4>Rating & Modal</h4>
+      
+      <div class="mb-4 mt-3">
+        <h6>Classificação Standalone</h6>
+        <app-rating [(ngModel)]="ratingVal"></app-rating>
+        <p class="text-muted small">Valor atual: {{ ratingVal }}</p>
+      </div>
+
+      <div class="mt-4">
+        <h6>Abrir Modal</h6>
+        <app-button variant="secondary" (onClick)="isModalOpen = true">Visualizar Modal de Teste</app-button>
+      </div>
+
+      <div class="mt-4 pt-3 border-top">
+        <h6>Filtrar Rating (Range)</h6>
+        <app-range-slider 
+          label="Estrelas (1-5)" 
+          description="Filtro para classificar de acordo com o peso de avaliações."
+          [(ngModel)]="rangeVal"
+          style="max-width: 280px; display: block;">
+        </app-range-slider>
+        <p class="text-muted small mb-0">Selection: {{ rangeVal.min }} to {{ rangeVal.max }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-4 pt-4 border-top">
+    <div class="col-12 mb-3">
+      <h4>Listagem e Cards (Grid)</h4>
+      <p class="text-muted">Lista reutilizável contendo os Article Cards e com exibição <b>2 colunas</b>:</p>
+    </div>
+    
+    <div class="col-12">
+      <!-- Templates are defined to be injected in the list -->
+      <ng-template #cardTemplate let-item>
+        <app-article-card 
+          [imageUrl]="item.imageUrl"
+          [timeText]="item.timeText"
+          [title]="item.title"
+          [author]="item.author"
+          [category]="item.category"
+          [categoryIcon]="item.categoryIcon"
+          [rating]="item.rating">
+        </app-article-card>
+      </ng-template>
+
+      <!-- list component receiving array of items and a TemplateRef -->
+       <app-list 
+         [columns]="2" 
+         [items]="dummyArticles" 
+         [itemTemplate]="cardTemplate">
+       </app-list>
+    </div>
+  </div>
+
+  <div class="row pt-4 mb-5">
+    <div class="col-12 d-flex justify-content-end">
+      <app-pagination [currentPage]="currentPage" [totalPages]="68" (pageChange)="onPageChange($event)"></app-pagination>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal Example -->
+<app-modal 
+  [isOpen]="isModalOpen" 
+  title="Publicar Artigo?" 
+  text="Deseja realmente publicar este artigo e deixá-lo visível para todos?"
+  (onClose)="isModalOpen = false">
+  
+  <div footer class="d-flex gap-2 w-100 justify-content-end">
+    <app-button variant="outline" (onClick)="isModalOpen = false">Cancelar</app-button>
+    <app-button variant="dark" (onClick)="isModalOpen = false">Publicar</app-button>
+  </div>
+</app-modal>
