@@ -23,26 +23,6 @@ Foi adicionada a estrutura de deploy com Docker para publicar no Render:
 - `.dockerignore` para reduzir contexto de build
 - `render.yaml` com configuração base do serviço web
 
-### Como configurar no Render (Web Service)
-
-- Runtime/Linguagem: `Docker`
-- Branch: `main`
-- Região: `Oregon (US West)`
-- Root Directory: deixar vazio
-- Dockerfile Path: `./Dockerfile`
-- Plano: `Free` (ou outro)
-
-### Variáveis de ambiente
-
-- `NODE_ENV=production`
-- `PORT` é definido automaticamente pelo Render
-
-### O que o Docker faz
-
-1. Instala dependências do frontend Angular SSR
-2. Gera build de produção (`ng build`)
-3. Inicia o servidor Node SSR em `dist/frontend/server/server.mjs`
-
 ## Trello
 
 - https://trello.com/invite/b/69e3e77877caa28d885c08fa/ATTIe145310dfcdb88435c999ce9e2372059CB377B9C/openfeed
