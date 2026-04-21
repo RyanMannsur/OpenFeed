@@ -12,6 +12,7 @@ import { ArticleCardComponent } from '../../components/article-card/component';
 import { ListComponent } from '../../components/list/component';
 import { RangeSliderComponent } from '../../components/range-slider/component';
 import { SelectComponent } from '../../components/select/component';
+import { ArticleCardAction, DummyArticle } from '../../shared/types/article';
 
 @Component({
   selector: 'app-test-components',
@@ -34,21 +35,16 @@ import { SelectComponent } from '../../components/select/component';
   styleUrls: ['./styles.css']
 })
 export class TestComponentsComponent {
-  // Input vars
   textVal = '';
   passVal = '';
   selectVal = '';
   
-  // Rating val
   ratingVal = 3;
   
-  // Range val
   rangeVal = { min: 1, max: 5 };
 
-  // Pagination
   currentPage = 1;
 
-  // Modal
   isModalOpen = false;
 
   selectOptions = [
@@ -58,7 +54,7 @@ export class TestComponentsComponent {
     { label: 'Entretenimento', value: 'entretenimento' }
   ];
 
-  dummyArticles = [
+  dummyArticles: DummyArticle[] = [
     {
       imageUrl: 'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&q=80&w=600',
       timeText: 'Hoje às 08:20',
@@ -66,7 +62,11 @@ export class TestComponentsComponent {
       author: 'Usuario A',
       category: 'Esportes',
       categoryIcon: 'sports_soccer',
-      rating: 4
+      rating: 4,
+      actions: [
+        { id: 'edit', label: 'Editar artigo', icon: 'edit' },
+        { id: 'delete', label: 'Excluir artigo', icon: 'delete', danger: true }
+      ]
     },
     {
       imageUrl: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&q=80&w=600',
@@ -75,7 +75,10 @@ export class TestComponentsComponent {
       author: 'Usuario B',
       category: 'Futebol',
       categoryIcon: 'sports_soccer',
-      rating: 3
+      rating: 3,
+      actions: [
+        { id: 'edit', label: 'Editar artigo', icon: 'edit' }
+      ]
     },
     {
       imageUrl: 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&q=80&w=600',
@@ -104,5 +107,18 @@ export class TestComponentsComponent {
   submitTeste(event: Event) {
      console.log('Form submited', { text: this.textVal, pass: this.passVal });
      alert('Form enviado!');
+  }
+
+  onArticleActionClick(action: ArticleCardAction, article: DummyArticle) {
+    console.log('Acao do card', { action: action.id, article: article.title });
+
+    if (action.id === 'edit') {
+      alert(`Editar: ${article.title}`);
+      return;
+    }
+
+    if (action.id === 'delete') {
+      alert(`Excluir: ${article.title}`);
+    }
   }
 }

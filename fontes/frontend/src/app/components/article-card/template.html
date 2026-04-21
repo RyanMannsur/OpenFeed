@@ -10,13 +10,6 @@
       <div class="mt-2 d-flex justify-content-between px-1">
         <div class="d-flex flex-column align-items-center">
           <app-rating [maxStars]="5" [(ngModel)]="rating" [readonly]="false"></app-rating>
-          <div class="d-flex justify-content-between w-100 px-1 mt-1">
-            <small class="text-muted" style="font-size: 10px;">Label</small>
-            <small class="text-muted fw-bold" style="font-size: 10px; color:#212529 !important">Label</small>
-            <small class="text-muted" style="font-size: 10px;">Label</small>
-            <small class="text-muted" style="font-size: 10px;">Label</small>
-            <small class="text-muted" style="font-size: 10px;">Label</small>
-          </div>
         </div>
       </div>
     </div>
@@ -25,7 +18,28 @@
       <div class="card-body p-0 d-flex flex-column h-100 mt-2 mt-md-0">
         <div class="d-flex justify-content-between align-items-start mb-3">
            <small class="text-muted">{{ timeText }}</small>
-           <span class="material-icons text-muted" style="cursor:pointer">more_horiz</span>
+           <div *ngIf="actions.length > 0" class="position-relative" (click)="onActionsMenuClick($event)">
+             <button
+               type="button"
+               class="actions-trigger"
+               aria-label="Abrir menu de acoes"
+               (click)="toggleActionsMenu($event)">
+               <span class="material-icons">more_horiz</span>
+             </button>
+
+             <div *ngIf="isActionsMenuOpen" class="actions-menu shadow-sm">
+               <button
+                 *ngFor="let action of actions"
+                 type="button"
+                 class="actions-item"
+                 [class.actions-item-danger]="action.danger"
+                 [disabled]="action.disabled"
+                 (click)="onActionSelect(action, $event)">
+                 <span *ngIf="action.icon" class="material-icons actions-icon">{{ action.icon }}</span>
+                 <span>{{ action.label }}</span>
+               </button>
+             </div>
+           </div>
         </div>
         
         <h6 class="card-title text-dark flex-grow-1 text-truncate-3" style="font-size: 15px; font-weight: 400; line-height: 1.4;">{{ title }}</h6>
