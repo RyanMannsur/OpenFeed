@@ -1,0 +1,39 @@
+<section class="auth-page register-page d-flex flex-column px-3 px-md-4 py-3">
+  <div class="auth-brand w-100 mx-auto mb-3 mb-md-4">
+    <img src="/img/logo.png" alt="OpenFeed Logo" class="auth-logo">
+  </div>
+
+  <div class="auth-shell register-shell d-grid align-items-center mx-auto p-4 p-lg-5 gap-4 rounded-4">
+    <div class="auth-copy">
+      <p class="eyebrow">OpenFeed</p>
+      <h1>Criar sua conta</h1>
+      <p class="lead">
+        Cadastre-se para acessar o OpenFeed e explorar um mundo de conteúdo personalizado. Preencha seus dados e junte-se à nossa comunidade!
+      </p>
+    </div>
+
+    <div class="auth-card card border-0 shadow-sm p-4">
+      <div class="card-head">
+        <h2>Registrar</h2>
+        <p>Preencha seus dados para criar o acesso.</p>
+      </div>
+
+      <p *ngIf="errorMessage" class="alert alert-danger p-2 mb-3">{{ errorMessage }}</p>
+
+      <app-form (onSubmit)="handleRegister()">
+        <app-input type="text" label="Nome" placeholder="Seu nome completo" [(ngModel)]="name" name="name"></app-input>
+        <app-input type="email" label="E-mail" placeholder="Seu e-mail" [(ngModel)]="email" name="email"></app-input>
+        <app-input type="password" label="Senha" placeholder="Crie uma senha" [(ngModel)]="password" name="password"></app-input>
+        <app-input type="password" label="Confirmar senha" placeholder="Repita a senha" [(ngModel)]="confirmPassword" name="confirmPassword"></app-input>
+        <app-button variant="dark" type="submit" [block]="true" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Criando...' : 'Criar conta' }}
+        </app-button>
+      </app-form>
+
+      <p class="helper-link mt-3 mb-0">
+        Já tem conta?
+        <a routerLink="/login">Voltar para login</a>
+      </p>
+    </div>
+  </div>
+</section>

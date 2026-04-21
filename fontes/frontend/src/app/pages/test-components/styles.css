@@ -1,1 +1,5 @@
 /* specific test visual configs */
+
+.range-slider-demo {
+	max-width: 280px;
+}
