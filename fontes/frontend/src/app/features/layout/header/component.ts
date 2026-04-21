@@ -1,17 +1,24 @@
-import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
+
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-header',
   standalone: true,
+  imports: [CommonModule],
   templateUrl: './template.html',
   styleUrls: ['./styles.css']
 })
 export class HeaderComponent {
-  userClicked() {
-    console.log('User icon clicked');
-  }
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
-  logoutClicked() {
-    console.log('Logout icon clicked');
+  readonly currentUser = this.authService.currentUser;
+
+  logoutClicked(): void {
+    this.authService.logout();
+    void this.router.navigate(['/login']);
   }
 }

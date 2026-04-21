@@ -4,7 +4,7 @@
     <small class="text-muted fw-bold">{{ minValue }} - {{ maxValue }}</small>
   </div>
   
-  <div class="position-relative range-wrapper">
+  <div class="position-relative d-flex align-items-center range-wrapper">
     <div class="range-track"></div>
     
     <div class="range-active" 
@@ -17,15 +17,15 @@
            [max]="max" 
            [(ngModel)]="minValue" 
            (input)="onMinChange()"
-           class="form-range custom-range thumb-left">
+           class="form-range custom-range thumb-left m-0">
            
     <input type="range" 
            [min]="min" 
            [max]="max" 
            [(ngModel)]="maxValue" 
            (input)="onMaxChange()"
-           class="form-range custom-range thumb-right">
+           class="form-range custom-range thumb-right m-0">
   </div>
   
-  <small *ngIf="description" class="text-muted d-block mt-2" style="font-size: 12px;">{{ description }}</small>
+  <small *ngIf="description" class="text-muted d-block mt-2 range-description">{{ description }}</small>
 </div>

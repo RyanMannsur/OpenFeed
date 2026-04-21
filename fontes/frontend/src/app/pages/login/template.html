@@ -1,0 +1,38 @@
+<section class="auth-page d-flex flex-column overflow-hidden px-3 px-md-4 py-3">
+  <div class="auth-brand w-100 mx-auto mb-2">
+    <img src="/img/logo.png" alt="OpenFeed Logo" class="auth-logo">
+  </div>
+
+  <div class="auth-shell d-grid align-items-center mx-auto p-4 p-lg-5 gap-4 rounded-4">
+    <div class="auth-copy">
+      <p class="eyebrow mb-2">OpenFeed</p>
+      <h1 class="mb-0">Entrar na sua conta</h1>
+      <p class="lead mt-3 mb-0">
+        Acesse sua conta e venha explorar o OpenFeed.
+      </p>
+    </div>
+
+    <div class="auth-card card border-0 shadow-sm p-4">
+      <div class="card-head">
+        <h2 class="mb-0">Entrar</h2>
+        <p class="mt-2 mb-3">Use seu e-mail e senha para acessar o sistema.</p>
+      </div>
+
+      <p *ngIf="successMessage" class="alert alert-success login-success p-2 mb-3">{{ successMessage }}</p>
+
+      <app-form (onSubmit)="handleLogin()">
+        <app-input type="email" label="E-mail" placeholder="Seu e-mail" [(ngModel)]="email" name="email"></app-input>
+        <app-input type="password" label="Senha" placeholder="Sua senha" [(ngModel)]="password" name="password"></app-input>
+        <app-button variant="dark" type="submit" [block]="true" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Entrando...' : 'Entrar' }}
+        </app-button>
+        <p *ngIf="errorMessage" class="login-error mt-2" aria-live="polite">{{ errorMessage }}</p>
+      </app-form>
+
+      <p class="helper-link mt-3 mb-0">
+        Não tem conta?
+        <a routerLink="/register">Criar cadastro</a>
+      </p>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,25 @@
+@import '../login/styles.css';
+
+.register-page {
+  height: auto;
+  min-height: 100vh;
+  max-height: none;
+  overflow: auto;
+}
+
+.register-page .auth-copy h1 {
+  max-width: 10ch;
+}
+
+.register-shell {
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 440px);
+  min-height: calc(100vh - 120px);
+}
+
+@media (max-width: 992px) {
+  .register-shell {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+}
+

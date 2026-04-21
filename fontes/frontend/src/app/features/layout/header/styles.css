@@ -2,8 +2,17 @@ header {
   height: 72px;
 }
 
+.user-name {
+  color: #111827;
+  font-weight: 600;
+}
+
 .material-icons {
   transition: opacity 0.2s ease-in-out;
+}
+
+.logout-icon {
+  font-size: 28px;
 }
 
 .btn-link:hover .material-icons {
