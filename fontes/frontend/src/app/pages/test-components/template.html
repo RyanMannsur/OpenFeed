@@ -64,7 +64,6 @@
     </div>
     
     <div class="col-12">
-      <!-- Templates are defined to be injected in the list -->
       <ng-template #cardTemplate let-item>
         <app-article-card 
           [imageUrl]="item.imageUrl"
@@ -73,11 +72,12 @@
           [author]="item.author"
           [category]="item.category"
           [categoryIcon]="item.categoryIcon"
-          [rating]="item.rating">
+          [rating]="item.rating"
+          [actions]="item.actions || []"
+          (actionClick)="onArticleActionClick($event, item)">
         </app-article-card>
       </ng-template>
 
-      <!-- list component receiving array of items and a TemplateRef -->
        <app-list 
          [columns]="2" 
          [items]="dummyArticles" 
@@ -94,7 +94,6 @@
 
 </div>
 
-<!-- Modal Example -->
 <app-modal 
   [isOpen]="isModalOpen" 
   title="Publicar Artigo?" 

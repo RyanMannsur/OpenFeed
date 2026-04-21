@@ -6,8 +6,8 @@
     background: #f1f5f9;
 }
 .pagination-custom .page-item.active .page-link {
-    background-color: #333333;
-    color: white;
+    background-color: #d1fae5;
+    color: #0f766e;
     font-weight: 600;
 }
 .pagination-custom .page-item.disabled .page-link {

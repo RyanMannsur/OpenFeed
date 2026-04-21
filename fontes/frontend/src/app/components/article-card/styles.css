@@ -14,3 +14,58 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+
+.actions-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    color: #6b7280;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.actions-menu {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    z-index: 10;
+    min-width: 170px;
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 6px;
+}
+
+.actions-item {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    border-radius: 8px;
+    text-align: left;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #343a40;
+    font-size: 14px;
+}
+
+.actions-item:hover:not(:disabled) {
+    background: #f8f9fa;
+}
+
+.actions-item:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.actions-item-danger {
+    color: #dc3545;
+}
+
+.actions-icon {
+    font-size: 18px;
+}
