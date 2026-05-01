@@ -1,0 +1,32 @@
+<div class="container-fluid py-4 px-4">
+  <div class="mb-4">
+    <button class="btn btn-link text-dark p-0 text-decoration-none d-flex align-items-center" (click)="onGoBack()" aria-label="Voltar">
+      <span class="material-icons back-icon">arrow_back</span>
+    </button>
+  </div>
+
+  <div class="row gx-5">
+    <!-- Coluna da Esquerda (Imagem) -->
+    <div class="col-md-6 mb-4">
+      <div class="article-image-container bg-light rounded d-flex justify-content-center align-items-center h-100">
+        <span class="material-icons text-muted" style="font-size: 80px;" *ngIf="!article.imageUrl || article.imageUrl === '/img/placeholder-image.jpg'">image</span>
+        <!-- Se houvesse imagem real, seria assim: -->
+        <!-- <img [src]="article.imageUrl" alt="Imagem do artigo" class="img-fluid rounded w-100 h-100 object-fit-cover" *ngIf="article.imageUrl && article.imageUrl !== '/img/placeholder-image.jpg'"> -->
+      </div>
+    </div>
+    
+    <!-- Coluna da Direita (Conteúdo) -->
+    <div class="col-md-6 mb-4 d-flex flex-column">
+      <h1 class="display-6 fw-bold mb-4 text-dark">{{ article.title }}</h1>
+      <div class="article-content text-muted flex-grow-1" style="white-space: pre-line;">
+        {{ article.content }}
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-12 d-flex justify-content-center">
+      <app-rating [maxStars]="5" [ngModel]="article.rating" (ngModelChange)="onRatingChange($event)"></app-rating>
+    </div>
+  </div>
+</div>

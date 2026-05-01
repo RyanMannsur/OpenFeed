@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ArticleService, ArticleFilter } from '../../services/article/service';
@@ -43,7 +44,7 @@ export class HomeComponent implements OnInit {
   filterStartDate: string = '';
   filterEndDate: string = '';
 
-  constructor(private articleService: ArticleService, private cdr: ChangeDetectorRef) {}
+  constructor(private articleService: ArticleService, private cdr: ChangeDetectorRef, private router: Router) {}
 
   ngOnInit() {
     this.loadCategories();
@@ -94,6 +95,14 @@ export class HomeComponent implements OnInit {
   }
 
   onArticleAction(action: ArticleCardAction, article: DummyArticle) {
-    console.log(`Action ${action.id} clicked on article: ${article.title}`);
+    if (action.id === 'edit') {
+      void this.router.navigate(['/article-edit/1']);
+    } else {
+      console.log(`Action ${action.id} clicked on article: ${article.title}`);
+    }
+  }
+
+  onCardClick(article: DummyArticle) {
+    void this.router.navigate(['/article-read/1']);
   }
 }
