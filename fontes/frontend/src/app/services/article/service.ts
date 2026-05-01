@@ -52,7 +52,6 @@ export class ArticleService {
             filteredArticles = filteredArticles.filter(a => new Date(a.date).getTime() >= start);
           }
           if (filter.endDate) {
-            // Include until end of day
             const end = new Date(filter.endDate);
             end.setHours(23, 59, 59, 999);
             filteredArticles = filteredArticles.filter(a => new Date(a.date).getTime() <= end.getTime());
