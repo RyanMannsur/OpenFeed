@@ -45,7 +45,7 @@
         <h6 class="card-title text-dark flex-grow-1 text-truncate-3 article-title">{{ title }}</h6>
         
         <div class="d-flex justify-content-between align-items-end mt-auto">
-          <small class="author-meta">{{ author }}</small>
+          <small class="author-meta text-primary" style="cursor: pointer;" (click)="onAuthorClick($event)">{{ author }}</small>
           <div class="d-flex align-items-center gap-1 category-meta">
             <small class="category-text">{{ category }}</small>
             <span *ngIf="categoryIcon" class="material-icons category-icon">{{ categoryIcon }}</span>

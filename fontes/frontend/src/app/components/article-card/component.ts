@@ -22,9 +22,15 @@ export class ArticleCardComponent {
   @Input() actions: ArticleCardAction[] = [];
   @Output() actionClick = new EventEmitter<ArticleCardAction>();
   @Output() cardClick = new EventEmitter<void>();
+  @Output() authorClick = new EventEmitter<void>();
 
   onCardClick() {
     this.cardClick.emit();
+  }
+
+  onAuthorClick(event: Event) {
+    event.stopPropagation();
+    this.authorClick.emit();
   }
 
   isActionsMenuOpen = false;

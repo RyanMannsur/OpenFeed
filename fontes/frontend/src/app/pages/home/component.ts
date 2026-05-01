@@ -105,4 +105,8 @@ export class HomeComponent implements OnInit {
   onCardClick(article: DummyArticle) {
     void this.router.navigate(['/article-read/1']);
   }
+
+  onAuthorClick(author: string) {
+    void this.router.navigate(['/user/1']);
+  }
 }

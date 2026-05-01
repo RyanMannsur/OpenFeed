@@ -21,7 +21,9 @@ export const routes: Routes = [
             { path: 'my-profile', loadComponent: () => import('./pages/my-profile/component').then(m => m.MyProfileComponent) },
             { path: 'article-create', loadComponent: () => import('./pages/article-create/component').then(m => m.ArticleCreateComponent) },
             { path: 'article-edit/:id', loadComponent: () => import('./pages/article-edit/component').then(m => m.ArticleEditComponent) },
-            { path: 'article-read/:id', loadComponent: () => import('./pages/article-read/component').then(m => m.ArticleReadComponent) }
+            { path: 'article-read/:id', loadComponent: () => import('./pages/article-read/component').then(m => m.ArticleReadComponent) },
+            { path: 'user/:id', loadComponent: () => import('./pages/user-profile/component').then(m => m.UserProfileComponent) },
+            { path: 'my-user', loadComponent: () => import('./pages/user-profile/component').then(m => m.UserProfileComponent) }
         ]
     },
     {
