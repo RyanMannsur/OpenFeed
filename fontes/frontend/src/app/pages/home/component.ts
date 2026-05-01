@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ArticleService, ArticleFilter } from '../../services/article/service';
@@ -43,7 +43,7 @@ export class HomeComponent implements OnInit {
   filterStartDate: string = '';
   filterEndDate: string = '';
 
-  constructor(private articleService: ArticleService) {}
+  constructor(private articleService: ArticleService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.loadCategories();
@@ -56,7 +56,10 @@ export class HomeComponent implements OnInit {
 
   loadCategories() {
     this.articleService.getCategories().subscribe(cats => {
-      this.categories = [{label: 'Todas', value: ''}, ...cats];
+      setTimeout(() => {
+        this.categories = [{label: 'Todas', value: ''}, ...cats];
+        this.cdr.markForCheck();
+      });
     });
   }
 
@@ -64,6 +67,7 @@ export class HomeComponent implements OnInit {
     this.articleService.getArticles(this.currentPage, this.pageSize, this.filters).subscribe(result => {
       this.articles = result.data;
       this.totalItems = result.total;
+      this.cdr.markForCheck();
     });
   }
 

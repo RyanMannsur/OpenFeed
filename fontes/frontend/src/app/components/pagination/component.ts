@@ -31,20 +31,19 @@ export class PaginationComponent {
 
   goToPage(page: number | string) {
     if (typeof page === 'number') {
-      this.currentPage = page;
-      this.pageChange.emit(this.currentPage);
+      this.pageChange.emit(page);
     }
   }
 
   prev() {
     if (this.currentPage > 1) {
-      this.goToPage(this.currentPage - 1);
+      this.pageChange.emit(this.currentPage - 1);
     }
   }
 
   next() {
     if (this.currentPage < this.totalPages) {
-      this.goToPage(this.currentPage + 1);
+      this.pageChange.emit(this.currentPage + 1);
     }
   }
 }
