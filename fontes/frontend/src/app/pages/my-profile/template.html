@@ -31,7 +31,8 @@
         [categoryIcon]="article.categoryIcon"
         [rating]="article.rating" 
         [actions]="article.actions || []"
-        (actionClick)="onArticleAction($event, article)">
+        (actionClick)="onArticleAction($event, article)"
+        (cardClick)="onCardClick(article)">
       </app-article-card>
     </div>
 

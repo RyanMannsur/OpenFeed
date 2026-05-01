@@ -1,0 +1,18 @@
+.upload-placeholder {
+  height: 400px;
+  border: 2px dashed #dee2e6;
+  transition: background-color 0.2s ease;
+}
+
+.upload-placeholder:hover {
+  background-color: #e9ecef !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+::ng-deep .content-textarea textarea {
+  height: 330px !important;
+  resize: none;
+}

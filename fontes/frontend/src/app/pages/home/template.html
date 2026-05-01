@@ -35,7 +35,8 @@
       <app-article-card [imageUrl]="article.imageUrl" [title]="article.title" [timeText]="formatDate(article.date)"
         [author]="article.author" [category]="article.category" [categoryIcon]="article.categoryIcon"
         [rating]="article.rating" [actions]="article.actions || []"
-        (actionClick)="onArticleAction($event, article)"></app-article-card>
+        (actionClick)="onArticleAction($event, article)"
+        (cardClick)="onCardClick(article)"></app-article-card>
     </div>
 
     <div class="col-12 text-center py-5" *ngIf="articles.length === 0">

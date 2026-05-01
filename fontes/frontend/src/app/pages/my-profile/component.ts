@@ -59,11 +59,15 @@ export class MyProfileComponent implements OnInit {
   }
 
   onArticleAction(action: ArticleCardAction, article: DummyArticle) {
-    console.log(`Action ${action.id} clicked on article: ${article.title}`);
+    if (action.id === 'edit') {
+      void this.router.navigate(['/article-edit/1']);
+    } else {
+      console.log(`Action ${action.id} clicked on article: ${article.title}`);
+    }
   }
 
   onCreateNewArticle() {
-    void this.router.navigate(['/testComponents']);
+    void this.router.navigate(['/article-create']);
   }
 
   onGoBack() {
@@ -72,5 +76,9 @@ export class MyProfileComponent implements OnInit {
 
   onSettingsClick() {
     void this.router.navigate(['/testComponents']);
+  }
+
+  onCardClick(article: DummyArticle) {
+    void this.router.navigate(['/article-read/1']);
   }
 }

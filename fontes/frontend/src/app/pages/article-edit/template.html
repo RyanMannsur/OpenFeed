@@ -1,0 +1,51 @@
+<div class="container-fluid py-4">
+  <div class="text-center mb-5">
+    <h1 class="display-5 fw-bold text-dark">Editar Artigo</h1>
+  </div>
+
+  <div class="row justify-content-center mb-4">
+    <div class="col-md-4">
+      <app-select 
+        label="Categoria" 
+        placeholder="Selecione..." 
+        [options]="categories" 
+        labelKey="label" 
+        valueKey="value"
+        [(ngModel)]="category">
+      </app-select>
+    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-md-5 mb-4">
+      <!-- Upload Placeholder -->
+      <div class="upload-placeholder d-flex justify-content-center align-items-center bg-light rounded cursor-pointer" (click)="onImageClick()">
+        <span class="material-icons text-muted" style="font-size: 80px;">image</span>
+      </div>
+    </div>
+    
+    <div class="col-md-5 mb-4 d-flex flex-column">
+      <div class="mb-3">
+        <app-input type="text" placeholder="Título" [(ngModel)]="title"></app-input>
+      </div>
+      <div class="flex-grow-1">
+        <app-input type="textarea" placeholder="Corpo do artigo..." [(ngModel)]="content" class="h-100 content-textarea"></app-input>
+      </div>
+    </div>
+  </div>
+
+  <div class="row justify-content-center mt-4">
+    <div class="col-md-10 d-flex justify-content-end gap-3">
+      <app-button variant="outline" (click)="onGoBack()">Voltar</app-button>
+      <app-button variant="dark" (click)="openPublishModal()">Publicar</app-button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Publicar -->
+<app-modal [isOpen]="isPublishModalOpen" title="Publicar?" text="Deseja publicar as alterações deste artigo?" (onClose)="closePublishModal()">
+  <div footer class="d-flex justify-content-end gap-2 w-100">
+    <app-button variant="outline" (click)="closePublishModal()">Cancelar</app-button>
+    <app-button variant="dark" (click)="confirmPublish()">Publicar</app-button>
+  </div>
+</app-modal>

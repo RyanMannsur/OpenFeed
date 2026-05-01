@@ -18,7 +18,10 @@ export const routes: Routes = [
             { path: '', redirectTo: 'home', pathMatch: 'full' },
             { path: 'home', loadComponent: () => import('./pages/home/component').then(m => m.HomeComponent) },
             { path: 'testComponents', loadComponent: () => import('./pages/test-components/component').then(m => m.TestComponentsComponent) },
-            { path: 'my-profile', loadComponent: () => import('./pages/my-profile/component').then(m => m.MyProfileComponent) }
+            { path: 'my-profile', loadComponent: () => import('./pages/my-profile/component').then(m => m.MyProfileComponent) },
+            { path: 'article-create', loadComponent: () => import('./pages/article-create/component').then(m => m.ArticleCreateComponent) },
+            { path: 'article-edit/:id', loadComponent: () => import('./pages/article-edit/component').then(m => m.ArticleEditComponent) },
+            { path: 'article-read/:id', loadComponent: () => import('./pages/article-read/component').then(m => m.ArticleReadComponent) }
         ]
     },
     {

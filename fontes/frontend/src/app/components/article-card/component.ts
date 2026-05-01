@@ -21,6 +21,11 @@ export class ArticleCardComponent {
   @Input() rating: number = 0;
   @Input() actions: ArticleCardAction[] = [];
   @Output() actionClick = new EventEmitter<ArticleCardAction>();
+  @Output() cardClick = new EventEmitter<void>();
+
+  onCardClick() {
+    this.cardClick.emit();
+  }
 
   isActionsMenuOpen = false;
 
