@@ -75,10 +75,14 @@ export class MyProfileComponent implements OnInit {
   }
 
   onSettingsClick() {
-    void this.router.navigate(['/testComponents']);
+    void this.router.navigate(['/my-user']);
   }
 
   onCardClick(article: DummyArticle) {
     void this.router.navigate(['/article-read/1']);
+  }
+
+  onAuthorClick(author: string) {
+    void this.router.navigate(['/user/1']);
   }
 }

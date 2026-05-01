@@ -1,0 +1,84 @@
+<div class="container-fluid py-4 px-4">
+  
+  <div class="mb-4">
+    <button class="btn btn-link text-dark p-0 text-decoration-none d-flex align-items-center" (click)="onGoBack()" aria-label="Voltar">
+      <span class="material-icons back-icon">arrow_back</span>
+    </button>
+  </div>
+
+  <div class="row mb-5 align-items-start">
+    <div class="col-md-4 d-flex flex-column align-items-center mb-4 mb-md-0">
+      <div class="position-relative">
+        <div class="user-photo-container rounded-circle bg-light d-flex justify-content-center align-items-center shadow-sm overflow-hidden mb-3">
+          <span class="material-icons text-muted" style="font-size: 80px;" *ngIf="!user.photoUrl || user.photoUrl === '/img/placeholder-image.jpg'">person</span>
+          <!-- <img [src]="user.photoUrl" alt="Foto do usuário" class="img-fluid w-100 h-100 object-fit-cover" *ngIf="user.photoUrl && user.photoUrl !== '/img/placeholder-image.jpg'"> -->
+        </div>
+        
+        <button *ngIf="isCurrentUser" class="btn btn-light rounded-circle shadow-sm position-absolute edit-photo-btn d-flex align-items-center justify-content-center" (click)="onEditPhoto()" aria-label="Editar foto">
+          <span class="material-icons fs-6">edit</span>
+        </button>
+      </div>
+      
+      <app-rating [maxStars]="5" [ngModel]="user.rating" [readonly]="true"></app-rating>
+    </div>
+
+    <div class="col-md-8">
+      <div class="d-flex align-items-center gap-2 mb-3">
+        <h2 class="fw-bold mb-0 text-dark">Sobre</h2>
+        <button *ngIf="isCurrentUser && !isEditingAbout" class="btn btn-link text-dark p-0 text-decoration-none d-flex align-items-center" (click)="onEditAbout()" aria-label="Editar sobre">
+          <span class="material-icons fs-5">edit</span>
+        </button>
+      </div>
+      
+      <div *ngIf="!isEditingAbout">
+        <p class="text-muted user-about-text">
+          {{ user.about }}
+        </p>
+      </div>
+
+      <div *ngIf="isEditingAbout" class="mt-2">
+        <app-input type="textarea" [(ngModel)]="tempAbout" class="about-textarea w-100"></app-input>
+        <div class="d-flex justify-content-end gap-2 mt-3">
+          <app-button variant="outline" (click)="onCancelAbout()">Cancelar</app-button>
+          <app-button variant="dark" (click)="onSaveAbout()">Salvar</app-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center mb-5 mt-5">
+    <h2 class="display-4 fw-bold text-dark">Principais Artigos</h2>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-md-6 mb-4" *ngFor="let article of articles">
+      <app-article-card 
+        [imageUrl]="article.imageUrl" 
+        [title]="article.title" 
+        [timeText]="formatDate(article.date)"
+        [author]="article.author" 
+        [category]="article.category" 
+        [categoryIcon]="article.categoryIcon"
+        [rating]="article.rating" 
+        [actions]="article.actions || []"
+        (actionClick)="onArticleAction($event, article)"
+        (cardClick)="onCardClick(article)">
+      </app-article-card>
+    </div>
+
+    <div class="col-12 text-center py-5" *ngIf="articles.length === 0">
+      <p class="text-muted">Nenhum artigo encontrado.</p>
+    </div>
+  </div>
+
+  <div class="row mt-3" *ngIf="totalPages > 1">
+    <div class="col-12 d-flex justify-content-end">
+      <app-pagination 
+        [currentPage]="currentPage" 
+        [totalPages]="totalPages"
+        (pageChange)="onPageChange($event)">
+      </app-pagination>
+    </div>
+  </div>
+
+</div>
