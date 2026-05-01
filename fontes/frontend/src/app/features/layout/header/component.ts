@@ -17,6 +17,10 @@ export class HeaderComponent {
 
   readonly currentUser = this.authService.currentUser;
 
+  onUserNameClick(): void {
+    void this.router.navigate(['/testComponents']);
+  }
+
   logoutClicked(): void {
     this.authService.logout();
     void this.router.navigate(['/login']);
