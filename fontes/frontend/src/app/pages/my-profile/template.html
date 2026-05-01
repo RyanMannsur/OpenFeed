@@ -1,0 +1,53 @@
+<div class="container-fluid py-4">
+  
+  <div class="d-flex justify-content-between align-items-center mb-5">
+    <button class="btn btn-link text-dark p-0 text-decoration-none d-flex align-items-center" (click)="onGoBack()" aria-label="Voltar">
+      <span class="material-icons back-icon">arrow_back</span>
+    </button>
+    <button class="btn btn-link text-dark p-0 text-decoration-none d-flex align-items-center" (click)="onSettingsClick()" aria-label="Configurações">
+      <span class="material-icons settings-icon">settings</span>
+    </button>
+  </div>
+
+  <div class="text-center mb-5 create-section">
+    <h1 class="display-5 fw-bold mb-3 text-dark">Criar novo Artigo</h1>
+    <button class="btn btn-link text-dark p-0" (click)="onCreateNewArticle()" aria-label="Criar novo artigo">
+      <span class="material-icons add-icon">add</span>
+    </button>
+  </div>
+
+  <div class="text-center mb-5">
+    <h2 class="display-4 fw-bold text-dark">Meus Artigos</h2>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-md-6 mb-4" *ngFor="let article of articles">
+      <app-article-card 
+        [imageUrl]="article.imageUrl" 
+        [title]="article.title" 
+        [timeText]="formatDate(article.date)"
+        [author]="article.author" 
+        [category]="article.category" 
+        [categoryIcon]="article.categoryIcon"
+        [rating]="article.rating" 
+        [actions]="article.actions || []"
+        (actionClick)="onArticleAction($event, article)">
+      </app-article-card>
+    </div>
+
+    <div class="col-12 text-center py-5" *ngIf="articles.length === 0">
+      <p class="text-muted">Você ainda não possui artigos.</p>
+    </div>
+  </div>
+
+  <div class="row mt-3" *ngIf="totalPages > 1">
+    <div class="col-12 d-flex justify-content-end">
+      <app-pagination 
+        [currentPage]="currentPage" 
+        [totalPages]="totalPages"
+        (pageChange)="onPageChange($event)">
+      </app-pagination>
+    </div>
+  </div>
+
+</div>
