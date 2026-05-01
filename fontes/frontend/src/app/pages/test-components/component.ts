@@ -57,7 +57,7 @@ export class TestComponentsComponent {
   dummyArticles: DummyArticle[] = [
     {
       imageUrl: 'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&q=80&w=600',
-      timeText: 'Hoje às 08:20',
+      date: 'Hoje às 08:20',
       title: 'Brasil ganha ouro em ótimo desempenho nas olimpíadas de inverno.',
       author: 'Usuario A',
       category: 'Esportes',
@@ -70,7 +70,7 @@ export class TestComponentsComponent {
     },
     {
       imageUrl: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&q=80&w=600',
-      timeText: 'Hoje às 08:19',
+      date: 'Hoje às 08:19',
       title: 'Corinthians finaliza menos que outros classificados, mas Lázaro vê efetividade.',
       author: 'Usuario B',
       category: 'Futebol',
@@ -82,7 +82,7 @@ export class TestComponentsComponent {
     },
     {
       imageUrl: 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&q=80&w=600',
-      timeText: 'Hoje às 08:23',
+      date: 'Hoje às 08:23',
       title: 'Novo filme do Homem-Aranha lota os cinemas.',
       author: 'Usuario C',
       category: 'Filmes',
@@ -91,7 +91,7 @@ export class TestComponentsComponent {
     },
     {
       imageUrl: '', // test placeholder
-      timeText: 'Ontem às 10:00',
+      date: 'Ontem às 10:00',
       title: 'Morte de Odette Roitmann para o país.',
       author: 'Usuario D',
       category: 'Entretenimento',

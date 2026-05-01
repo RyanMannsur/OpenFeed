@@ -4,7 +4,7 @@
   </div>
 
   <div class="user-slot d-flex align-items-center gap-3" *ngIf="currentUser() as user">
-    <span class="user-name">{{ user.name }}</span>
+    <span class="user-name cursor-pointer" (click)="onUserNameClick()">{{ user.name }}</span>
     <button class="btn btn-link text-dark p-0 text-decoration-none d-flex align-items-center" (click)="logoutClicked()" aria-label="Sair do sistema">
       <span class="material-icons logout-icon">logout</span>
     </button>

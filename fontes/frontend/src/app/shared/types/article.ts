@@ -8,7 +8,7 @@ export interface ArticleCardAction {
 
 export interface DummyArticle {
   imageUrl: string;
-  timeText: string;
+  date: string;
   title: string;
   author: string;
   category: string;
