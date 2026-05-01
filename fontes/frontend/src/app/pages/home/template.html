@@ -1,0 +1,53 @@
+<div class="container-fluid py-4">
+
+  <div class="filters-section row align-items-end g-3 mb-4">
+    <div class="col-xl-auto col-lg-auto col-md-3 col-12">
+      <app-range-slider label="Avaliação" description="" [min]="1" [max]="5"
+        [(ngModel)]="filterRating"></app-range-slider>
+    </div>
+
+    <div class="col-xl col-lg col-md-5 col-12">
+      <app-input type="search" placeholder="Buscar..." icon="search" [(ngModel)]="filterSearch"></app-input>
+    </div>
+
+    <div class="col-xl-auto col-lg-auto col-md-4 col-12">
+      <app-select label="Categoria" placeholder="Selecione..." [options]="categories" labelKey="label" valueKey="value"
+        [(ngModel)]="filterCategory"></app-select>
+    </div>
+
+    <div class="col-xl-auto col-lg-auto col-md-4 col-12">
+      <app-input type="date" label="Início" [(ngModel)]="filterStartDate"></app-input>
+    </div>
+
+    <div class="col-xl-auto col-lg-auto col-md-4 col-12">
+      <app-input type="date" label="Fim" [(ngModel)]="filterEndDate"></app-input>
+    </div>
+
+    <div class="col-xl-auto col-lg-auto col-md-4 col-12">
+      <div class="btn-filter-wrapper">
+        <app-button variant="dark" [block]="true" (click)="applyFilters()">Filtrar</app-button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-4" *ngFor="let article of articles">
+      <app-article-card [imageUrl]="article.imageUrl" [title]="article.title" [timeText]="formatDate(article.date)"
+        [author]="article.author" [category]="article.category" [categoryIcon]="article.categoryIcon"
+        [rating]="article.rating" [actions]="article.actions || []"
+        (actionClick)="onArticleAction($event, article)"></app-article-card>
+    </div>
+
+    <div class="col-12 text-center py-5" *ngIf="articles.length === 0">
+      <p class="text-muted">Nenhuma notícia encontrada com os filtros selecionados.</p>
+    </div>
+  </div>
+
+  <div class="row mt-3" *ngIf="totalPages > 1">
+    <div class="col-12 d-flex justify-content-end">
+      <app-pagination [currentPage]="currentPage" [totalPages]="totalPages"
+        (pageChange)="onPageChange($event)"></app-pagination>
+    </div>
+  </div>
+
+</div>

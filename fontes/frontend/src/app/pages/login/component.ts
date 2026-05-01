@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.authService.getCurrentUser()) {
-      void this.router.navigate(['/testComponents']);
+      void this.router.navigate(['/home']);
       return;
     }
 
@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit {
         )
       );
 
-      await this.router.navigate(['/testComponents']);
+      await this.router.navigate(['/home']);
     } catch {
       this.errorMessage = 'E-mail ou senha incorretos.';
     } finally {

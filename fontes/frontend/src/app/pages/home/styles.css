@@ -1,0 +1,18 @@
+::ng-deep .filters-section app-range-slider .range-wrapper {
+  min-height: 38px;
+}
+
+::ng-deep .filters-section .btn-filter-wrapper {
+  margin-bottom: 1rem;
+}
+
+::ng-deep .filters-section .btn-filter-wrapper app-button {
+  display: block;
+}
+
+::ng-deep .filters-section .btn-filter-wrapper .btn {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

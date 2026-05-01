@@ -15,7 +15,8 @@ export const routes: Routes = [
         canMatch: [authGuard],
         loadComponent: () => import('./features/layout/shell/component').then(m => m.ShellComponent),
         children: [
-            { path: '', redirectTo: 'testComponents', pathMatch: 'full' },
+            { path: '', redirectTo: 'home', pathMatch: 'full' },
+            { path: 'home', loadComponent: () => import('./pages/home/component').then(m => m.HomeComponent) },
             { path: 'testComponents', loadComponent: () => import('./pages/test-components/component').then(m => m.TestComponentsComponent) }
         ]
     },
