@@ -1,0 +1,39 @@
+.back-icon,
+.settings-icon {
+  font-size: 32px;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.back-icon:hover,
+.settings-icon:hover {
+  opacity: 0.7;
+}
+
+.create-section {
+  margin-top: 2rem;
+  margin-bottom: 4rem;
+}
+
+.add-icon {
+  font-size: 80px;
+  font-weight: 300;
+  color: #111827;
+  transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+.add-icon:hover {
+  opacity: 0.7;
+  transform: scale(1.1);
+}
+
+h1.display-5 {
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+h2.display-4 {
+  font-weight: 800;
+  color: #1a1a1a;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+}
