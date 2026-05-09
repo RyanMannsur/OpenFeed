@@ -28,6 +28,8 @@ Foi adicionada a estrutura de deploy com Docker para publicar no Render:
 
 > Status atual: publicação somente do frontend Angular (SSR). O sistema usa mock local e ainda não tem backend/API.
 
+Como o deploy está no Render gratuito, a primeira entrada no sistema pode demorar um pouco para carregar, geralmente entre 2 e 5 minutos na tela default do render até o direcionamento para o site.
+
 - `Dockerfile` na raiz do repositório
 - `.dockerignore` para reduzir contexto de build
 - `render.yaml` com configuração base do serviço web
