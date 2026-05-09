@@ -26,18 +26,18 @@ const angularApp = new AngularNodeAppEngine();
  */
 
 /**
- * Serve static files from public folder
+ * Serve static files from public folder (images, etc - shorter cache)
  */
 app.use(
   express.static(publicFolder, {
-    maxAge: '1y',
+    maxAge: '1d',
     index: false,
     redirect: false,
   }),
 );
 
 /**
- * Serve static files from /browser
+ * Serve static files from /browser (Angular bundles - longer cache)
  */
 app.use(
   express.static(browserDistFolder, {
