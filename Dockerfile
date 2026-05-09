@@ -20,6 +20,7 @@ COPY --from=deps /app/fontes/frontend/node_modules ./node_modules
 RUN npm prune --omit=dev
 
 COPY --from=build /app/fontes/frontend/dist/frontend ./dist/frontend
+COPY fontes/frontend/public ./public
 
 EXPOSE 4000
 CMD ["node", "dist/frontend/server/server.mjs"]
