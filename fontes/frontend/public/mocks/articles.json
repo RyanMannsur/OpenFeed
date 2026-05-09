@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "imageUrl": "https://picsum.photos/id/1018/800/600",
+    "imageUrl": "/img/ouroOlimp.png",
     "date": "2026-05-01T08:20:00.000Z",
     "title": "Brasil ganha ouro em otimo desempenho na olimpiadas de inverno.",
     "author": "Usuario A",
@@ -15,7 +15,7 @@
   },
   {
     "id": 2,
-    "imageUrl": "https://picsum.photos/id/1015/800/600",
+    "imageUrl": "/img/corinthias.png",
     "date": "2026-05-01T08:19:00.000Z",
     "title": "Corinthians finaliza menos que outros classificados, mas Lázaro vê efetividade: \"Potencial real de gol\"",
     "author": "Usuario A",
@@ -29,7 +29,7 @@
   },
   {
     "id": 3,
-    "imageUrl": "https://picsum.photos/id/1025/800/600",
+    "imageUrl": "/img/odeth.png",
     "date": "2026-05-01T08:25:00.000Z",
     "title": "Morte de Odeth Roitmann para o país",
     "author": "Usuario A",
@@ -43,7 +43,7 @@
   },
   {
     "id": 4,
-    "imageUrl": "https://picsum.photos/id/1027/800/600",
+    "imageUrl": "/img/spiderman.png",
     "date": "2026-05-01T08:23:00.000Z",
     "title": "Novo filme do Homem-Aranha lota os cinemas",
     "author": "Usuario A",
@@ -57,7 +57,7 @@
   },
   {
     "id": 5,
-    "imageUrl": "https://picsum.photos/id/1012/800/600",
+    "imageUrl": "/img/tech.png",
     "date": "2026-04-30T14:15:00.000Z",
     "title": "Nova tecnologia revolucionária lançada no Vale do Silício",
     "author": "Usuario B",
@@ -71,7 +71,7 @@
   },
   {
     "id": 6,
-    "imageUrl": "https://picsum.photos/id/1011/800/600",
+    "imageUrl": "/img/vacation.png",
     "date": "2026-04-30T10:30:00.000Z",
     "title": "Dicas de viagem para as férias de verão",
     "author": "Usuario C",
@@ -85,7 +85,7 @@
   },
   {
     "id": 7,
-    "imageUrl": "https://picsum.photos/id/1005/800/600",
+    "imageUrl": "/img/boloChocolate.png",
     "date": "2026-04-29T18:45:00.000Z",
     "title": "Receita fácil de bolo de chocolate cremoso",
     "author": "Usuario D",
@@ -99,7 +99,7 @@
   },
   {
     "id": 8,
-    "imageUrl": "https://picsum.photos/id/1004/800/600",
+    "imageUrl": "/img/investimento.png",
     "date": "2026-04-29T09:10:00.000Z",
     "title": "Como investir em ações para iniciantes",
     "author": "Usuario A",
