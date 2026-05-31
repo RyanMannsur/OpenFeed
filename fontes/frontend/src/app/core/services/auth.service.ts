@@ -1,40 +1,18 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Injectable, computed, inject, signal } from '@angular/core';
-import { PLATFORM_ID } from '@angular/core';
-import { Observable, delay, map, of } from 'rxjs';
+import { Injectable, computed, inject, signal, PLATFORM_ID } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
 
-import { AuthCredentials, AuthSession, AuthUser, MockApiRequest, MockApiResponse, RegisterPayload } from '../../shared/types/auth';
-
-interface MockUserRecord extends AuthUser {
-  password: string;
-}
+import { environment } from '../../../environments/environment';
+import { AuthCredentials, AuthSession, AuthUser, MockApiRequest, MockApiResponse, RegisterPayload, BackendAuthResponse } from '../../shared/types/auth';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly usersStorageKey = 'openfeed.mock.users';
-  private readonly sessionStorageKey = 'openfeed.mock.session';
-
-  private readonly defaultUsers: MockUserRecord[] = [
-    {
-      id: 1,
-      name: 'Ryan Mansur',
-      email: 'ryan.emv@gmail.com',
-      password: '1234',
-      role: 'user'
-    },
-    {
-      id: 2,
-      name: 'Opinion',
-      email: 'adm@gmail.com',
-      password: '1234',
-      role: 'admin'
-    }
-  ];
-
-  private readonly usersSignal = signal<MockUserRecord[]>(this.loadUsers());
+  private readonly http = inject(HttpClient);
+  private readonly sessionStorageKey = 'openfeed.auth.session';
   private readonly currentUserSignal = signal<AuthUser | null>(this.loadSession());
 
   readonly currentUser = computed(() => this.currentUserSignal());
@@ -43,55 +21,49 @@ export class AuthService {
   login(credentials: AuthCredentials): Observable<MockApiResponse<AuthSession>> {
     const request: MockApiRequest<AuthCredentials> = {
       method: 'POST',
-      url: '/auth/login',
+      url: `${environment.apiUrl}/auth/login`,
       body: credentials
     };
 
-    return this.simulateRequest(request, () => {
-      const user = this.findUser(credentials.email, credentials.password);
+    return this.http.post<BackendAuthResponse>(`${environment.apiUrl}/auth/login`, {
+      email: credentials.email,
+      senha: credentials.password
+    }).pipe(
+      map((response) => {
+        const session = this.createSession(response.data.usuario, response.data.token);
+        this.persistSession(session);
 
-      if (!user) {
-        throw new Error('Usuário ou senha inválidos.');
-      }
-
-      const session = this.createSession(this.toPublicUser(user));
-      this.persistSession(session.user);
-
-      return session;
-    });
+        return {
+          request,
+          message: 'Login realizado com sucesso.',
+          data: session
+        };
+      })
+    );
   }
 
   register(payload: RegisterPayload): Observable<MockApiResponse<AuthUser>> {
     const request: MockApiRequest<RegisterPayload> = {
       method: 'POST',
-      url: '/auth/register',
+      url: `${environment.apiUrl}/auth/register`,
       body: payload
     };
 
-    return this.simulateRequest(request, () => {
-      const normalizedEmail = payload.email.trim().toLowerCase();
+    return this.http.post<BackendAuthResponse>(`${environment.apiUrl}/auth/registrar`, {
+      nome: payload.name,
+      email: payload.email,
+      senha: payload.password
+    }).pipe(
+      map((response) => {
+        const user = this.toPublicUser(response.data.usuario);
 
-      if (!payload.name.trim() || !normalizedEmail || !payload.password.trim()) {
-        throw new Error('Preencha todos os campos para continuar.');
-      }
-
-      if (this.usersSignal().some((user) => user.email.toLowerCase() === normalizedEmail)) {
-        throw new Error('Já existe um usuário cadastrado com este e-mail.');
-      }
-
-      const newUser: MockUserRecord = {
-        id: this.nextUserId(),
-        name: payload.name.trim(),
-        email: normalizedEmail,
-        password: payload.password,
-        role: 'user'
-      };
-
-      const updatedUsers = [...this.usersSignal(), newUser];
-      this.usersSignal.set(updatedUsers);
-
-      return this.toPublicUser(newUser);
-    });
+        return {
+          request,
+          message: 'Usuário registrado com sucesso.',
+          data: user
+        };
+      })
+    );
   }
 
   logout(): void {
@@ -106,50 +78,39 @@ export class AuthService {
     return this.currentUserSignal();
   }
 
-  private findUser(email: string, password: string): MockUserRecord | undefined {
-    const normalizedEmail = email.trim().toLowerCase();
+  getToken(): string | null {
+    if (!this.canUseStorage()) {
+      return null;
+    }
 
-    return this.usersSignal().find((user) => user.email.toLowerCase() === normalizedEmail && user.password === password);
+    const rawSession = window.localStorage.getItem(this.sessionStorageKey);
+    if (!rawSession) {
+      return null;
+    }
+
+    try {
+      const session = JSON.parse(rawSession) as { token?: string };
+      return session.token ?? null;
+    } catch {
+      return null;
+    }
   }
 
-  private createSession(user: AuthUser): AuthSession {
+  private createSession(user: { id: number; nome: string; email: string }, token: string): AuthSession {
     return {
-      token: `mock-token-${user.id}-${Date.now()}`,
-      user,
+      token,
+      user: this.toPublicUser(user),
       loginAt: new Date().toISOString()
     };
   }
 
-  private toPublicUser(user: MockUserRecord): AuthUser {
+  private toPublicUser(user: { id: number; nome: string; email: string }): AuthUser {
     return {
       id: user.id,
-      name: user.name,
+      name: user.nome,
       email: user.email,
-      role: user.role
+      role: user.email === 'admin@openfeed.com' || user.id === 1 ? 'admin' : 'user'
     };
-  }
-
-  private nextUserId(): number {
-    return Math.max(...this.usersSignal().map((user) => user.id), 0) + 1;
-  }
-
-  private simulateRequest<TData, TBody>(request: MockApiRequest<TBody>, handler: () => TData): Observable<MockApiResponse<TData>> {
-    return of(null).pipe(
-      delay(500),
-      map(() => ({
-        request,
-        message: 'Requisição mock processada com sucesso.',
-        data: handler()
-      }))
-    );
-  }
-
-  private loadUsers(): MockUserRecord[] {
-    if (this.canUseStorage()) {
-      window.localStorage.removeItem(this.usersStorageKey);
-    }
-
-    return [...this.defaultUsers];
   }
 
   private loadSession(): AuthUser | null {
@@ -164,20 +125,25 @@ export class AuthService {
     }
 
     try {
-      return JSON.parse(rawSession) as AuthUser;
+      const parsed = JSON.parse(rawSession) as { user?: AuthUser } | AuthUser;
+      if ('user' in parsed && parsed.user) {
+        return parsed.user;
+      }
+
+      return parsed as AuthUser;
     } catch {
       return null;
     }
   }
 
-  private persistSession(user: AuthUser): void {
-    this.currentUserSignal.set(user);
+  private persistSession(session: AuthSession): void {
+    this.currentUserSignal.set(session.user);
 
     if (!this.canUseStorage()) {
       return;
     }
 
-    window.localStorage.setItem(this.sessionStorageKey, JSON.stringify(user));
+    window.localStorage.setItem(this.sessionStorageKey, JSON.stringify(session));
   }
 
   private canUseStorage(): boolean {

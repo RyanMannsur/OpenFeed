@@ -57,7 +57,7 @@
         [title]="article.title" 
         [timeText]="formatDate(article.date)"
         [author]="article.author" 
-        [category]="article.category" 
+        [category]="article.categoryLabel || article.category" 
         [categoryIcon]="article.categoryIcon"
         [rating]="article.rating" 
         [actions]="article.actions || []"

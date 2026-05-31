@@ -17,6 +17,10 @@ export class HeaderComponent {
 
   readonly currentUser = this.authService.currentUser;
 
+  onLogoClick(): void {
+    void this.router.navigate(['/home']);
+  }
+
   onUserNameClick(): void {
     void this.router.navigate(['/my-profile']);
   }

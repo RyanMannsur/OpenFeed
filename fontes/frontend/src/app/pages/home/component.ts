@@ -96,17 +96,17 @@ export class HomeComponent implements OnInit {
 
   onArticleAction(action: ArticleCardAction, article: DummyArticle) {
     if (action.id === 'edit') {
-      void this.router.navigate(['/article-edit/1']);
+      void this.router.navigate([`/article-edit/${article.id}`]);
     } else {
       console.log(`Action ${action.id} clicked on article: ${article.title}`);
     }
   }
 
   onCardClick(article: DummyArticle) {
-    void this.router.navigate(['/article-read/1']);
+    void this.router.navigate([`/article-read/${article.id}`]);
   }
 
-  onAuthorClick(author: string) {
-    void this.router.navigate(['/user/1']);
+  onAuthorClick(article: DummyArticle) {
+    void this.router.navigate([`/user/${article.authorId ?? 1}`]);
   }
 }

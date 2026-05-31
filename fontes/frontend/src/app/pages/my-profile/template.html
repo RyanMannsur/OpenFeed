@@ -27,13 +27,13 @@
         [title]="article.title" 
         [timeText]="formatDate(article.date)"
         [author]="article.author" 
-        [category]="article.category" 
+        [category]="article.categoryLabel || article.category" 
         [categoryIcon]="article.categoryIcon"
         [rating]="article.rating" 
         [actions]="article.actions || []"
         (actionClick)="onArticleAction($event, article)"
         (cardClick)="onCardClick(article)"
-        (authorClick)="onAuthorClick(article.author)">
+        (authorClick)="onAuthorClick(article)">
       </app-article-card>
     </div>
 
@@ -51,5 +51,22 @@
       </app-pagination>
     </div>
   </div>
+
+  <app-modal
+    [isOpen]="isDeleteModalOpen"
+    title="Excluir artigo?"
+    text="Essa ação não pode ser desfeita. Deseja excluir este artigo?"
+    (onClose)="closeDeleteModal()">
+    <div *ngIf="deleteError" body class="alert alert-danger mb-3 py-2">
+      {{ deleteError }}
+    </div>
+
+    <div footer class="d-flex justify-content-end gap-2 w-100">
+      <app-button variant="outline" [disabled]="isDeleting" (click)="closeDeleteModal()">Cancelar</app-button>
+      <app-button variant="dark" [disabled]="isDeleting" (click)="confirmDelete()">
+        {{ isDeleting ? 'Excluindo...' : 'Excluir' }}
+      </app-button>
+    </div>
+  </app-modal>
 
 </div>

@@ -22,6 +22,22 @@ export interface AuthSession {
   loginAt: string;
 }
 
+export interface BackendAuthUser {
+  id: number;
+  nome: string;
+  email: string;
+  bio?: string | null;
+  avatar_url?: string | null;
+  media_nota?: number;
+}
+
+export interface BackendAuthResponse {
+  data: {
+    usuario: BackendAuthUser;
+    token: string;
+  };
+}
+
 export interface MockApiRequest<TBody = unknown> {
   method: 'GET' | 'POST' | 'PUT';
   url: string;
