@@ -38,7 +38,10 @@ export async function calcularMediaDoArtigo(artigoId) {
 
 export async function calcularMediaDoAutor(autorId) {
   const [rows] = await pool.query(
-    'SELECT AVG(a.media_notas) AS media FROM artigos a WHERE a.autor_id = ?',
+    `SELECT AVG(n.valor) AS media
+     FROM notas n
+     INNER JOIN artigos a ON a.id = n.artigo_id
+     WHERE a.autor_id = ?`,
     [autorId]
   );
   return parseFloat(rows[0]?.media || 0);

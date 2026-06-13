@@ -1,6 +1,5 @@
 import app from './src/app.js';
 import { testConnection } from './src/config/database.js';
-import { iniciarAgendador } from './src/jobs/recalculoJob.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -39,9 +38,6 @@ async function startServer() {
     console.log(`📡 Health Check: http://localhost:${PORT}/api/health`);
   });
 
-  if (isDbConnected) {
-    iniciarAgendador();
-  }
 }
 
 startServer();

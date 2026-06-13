@@ -1,7 +1,6 @@
 import * as notaRepository from '../repositories/notaRepository.js';
-import * as agendadorRepository from '../repositories/agendadorRepository.js';
 import * as artigoRepository from '../repositories/artigoRepository.js';
-import { executarRecalculo } from '../jobs/recalculoJob.js';
+import * as usuarioRepository from '../repositories/usuarioRepository.js';
 
 export async function darNota({ usuarioId, artigoId, valor }) {
   if (!valor || valor < 1 || valor > 5) {
@@ -17,17 +16,19 @@ export async function darNota({ usuarioId, artigoId, valor }) {
     throw err;
   }
 
-  const notaId = await notaRepository.upsert({ usuarioId, artigoId, valor });
-  await agendadorRepository.registrar({ notaId, artigoId });
+  // Salva ou atualiza a avaliação do usuário
+  await notaRepository.upsert({ usuarioId, artigoId, valor });
 
-  // Dispara o recálculo imediato de forma assíncrona
-  setImmediate(async () => {
-    try {
-      await executarRecalculo();
-    } catch (err) {
-      console.error('[Background Recalculate] Erro ao recalcular notas:', err.message);
-    }
-  });
+  // Recalcula a média do artigo e salva imediatamente
+  const mediaArtigo = await notaRepository.calcularMediaDoArtigo(artigoId);
+  await artigoRepository.updateMediaNotas(artigoId, mediaArtigo);
+
+  // Recalcula a média do autor e salva imediatamente
+  const autorId = artigo.authorId;
+  const mediaAutor = await notaRepository.calcularMediaDoAutor(autorId);
+  await usuarioRepository.updateMediaNota(autorId, mediaAutor);
+
+  console.log(`[Nota] Artigo #${artigoId} → média: ${mediaArtigo} | Autor #${autorId} → média: ${mediaAutor}`);
 
   return { mensagem: 'Nota registrada com sucesso. A média foi atualizada.' };
 }
@@ -51,6 +52,6 @@ export async function getNota({ usuarioId, artigoId }) {
 
   return {
     tipo: 'media',
-    valor: parseFloat(artigo.media_notas)
+    valor: parseFloat(artigo.rating ?? 0)
   };
 }

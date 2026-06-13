@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   `bio`            TEXT NULL,
   `avatar_url`     VARCHAR(255) NULL,
   `media_nota`     DECIMAL(3,2) DEFAULT 0.00,
+  `nota`           DECIMAL(3,2) DEFAULT 0.00,
   `criado_em`      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `atualizado_em`  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX `idx_usuarios_email` (`email`)
@@ -22,6 +23,7 @@ CREATE TABLE IF NOT EXISTS `artigos` (
   `resumo`         VARCHAR(500) NULL,
   `categoria`      VARCHAR(100) NOT NULL,
   `media_notas`    DECIMAL(3,2) DEFAULT 0.00,
+  `nota`           DECIMAL(3,2) DEFAULT 0.00,
   `image_url`      VARCHAR(255) NULL,
   `autor_id`       INT NOT NULL,
   `criado_em`      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
