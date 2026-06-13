@@ -21,22 +21,30 @@ export async function initDatabase() {
     return;
   }
 
-  // Divide o SQL em statements individuais (separados por ;)
-  const statements = sql
+  // Remove comentários de linha (-- ...) ANTES de dividir por ";"
+  // Isso evita que comentários no início sejam confundidos com statements
+  const cleanSql = sql
+    .split('\n')
+    .map((line) => line.replace(/--.*$/, ''))
+    .join('\n');
+
+  // Divide em statements individuais, ignorando os vazios
+  const statements = cleanSql
     .split(';')
     .map((s) => s.trim())
-    .filter((s) => s.length > 0 && !s.startsWith('--'));
+    .filter((s) => s.length > 0);
 
   const conn = await pool.getConnection();
   try {
     for (const statement of statements) {
       await conn.query(statement);
     }
-    console.log('✅ Banco de dados inicializado com sucesso (schema aplicado).');
+    console.log(`✅ Banco de dados inicializado com sucesso (${statements.length} statements aplicados).`);
   } catch (err) {
-    // Ignora erros de "já existe" — schema usa IF NOT EXISTS e ON DUPLICATE KEY
     if (err.code !== 'ER_TABLE_EXISTS_ERROR' && err.code !== 'ER_DUP_ENTRY') {
       console.error('[DB Init] Erro ao aplicar schema:', err.message);
+    } else {
+      console.log('[DB Init] Tabelas já existem, nenhuma alteração necessária.');
     }
   } finally {
     conn.release();
