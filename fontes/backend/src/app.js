@@ -24,8 +24,15 @@ app.use(express.urlencoded({ extended: true }));
 // Expõe a pasta pública para servir imagens e outros ativos estáticos do backend.
 app.use('/img', express.static(path.join(process.cwd(), 'public', 'img')));
 
-// Rota raiz para verificação rápida do status do servidor
-app.get('/', (req, res) => {
+// Servir arquivos estáticos do frontend Angular
+const frontendPath = path.join(process.cwd(), 'public', 'frontend');
+app.use(express.static(frontendPath));
+
+// Acopla todas as rotas da API sob o prefixo '/api'
+app.use('/api', apiRouter);
+
+// Rota de informação da API (movida de '/' para evitar colisão com o frontend)
+app.get('/api-info', (req, res) => {
   res.json({
     name: 'OpenFeed API',
     version: '1.0.0',
@@ -39,8 +46,13 @@ app.get('/', (req, res) => {
   });
 });
 
-// Acopla todas as rotas da API sob o prefixo '/api'
-app.use('/api', apiRouter);
+// Qualquer outra rota não-API deve servir o index.html do frontend Angular (para roteamento SPA)
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api') || req.path.startsWith('/img')) {
+    return next();
+  }
+  res.sendFile(path.join(frontendPath, 'index.html'));
+});
 
 // Middleware para tratamento de rotas não encontradas (404)
 app.use(notFound);
