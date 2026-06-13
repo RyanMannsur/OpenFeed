@@ -40,6 +40,7 @@ interface BackendArticle {
   resumo?: string | null;
   categoria?: string;
   media_notas?: number;
+  nota?: number;
   image_url?: string | null;
   autor_id?: number;
   autor_nome?: string;
@@ -80,6 +81,7 @@ interface BackendSingleArticleResponse {
   resumo?: string | null;
   categoria?: string;
   media_notas?: number;
+  nota?: number;
   image_url?: string | null;
   autor_id?: number;
   autor_nome?: string;
@@ -222,7 +224,8 @@ export class ArticleService {
     return this.http.get<{ success: boolean; data: { id: number; nome: string; bio: string; avatar_url: string; media_nota: number; nota?: number } }>(`${environment.apiUrl}/usuarios/perfil`).pipe(
       map((response) => ({
         ...response.data,
-        media_nota: Number(response.data.nota ?? response.data.media_nota ?? 0)
+        media_nota: Number(response.data.nota ?? response.data.media_nota ?? 0),
+        nota: Number(response.data.nota ?? response.data.media_nota ?? 0)
       }))
     );
   }
@@ -231,7 +234,8 @@ export class ArticleService {
     return this.http.get<{ success: boolean; data: { id: number; nome: string; bio: string; avatar_url: string; media_nota: number; nota?: number } }>(`${environment.apiUrl}/usuarios/${id}`).pipe(
       map((response) => ({
         ...response.data,
-        media_nota: Number(response.data.nota ?? response.data.media_nota ?? 0)
+        media_nota: Number(response.data.nota ?? response.data.media_nota ?? 0),
+        nota: Number(response.data.nota ?? response.data.media_nota ?? 0)
       }))
     );
   }
