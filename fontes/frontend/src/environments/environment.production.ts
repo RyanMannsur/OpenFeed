@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: '/api',
+  apiUrl: 'https://openfeed-vg1b.onrender.com/api',
   assetUrl: ''
-};
+};
