@@ -4,11 +4,11 @@
     <select 
       class="form-select custom-select pe-5"
       [disabled]="disabled"
-      [value]="value"
-      (change)="onInputChanged($event)"
+      [ngModel]="value"
+      (ngModelChange)="onModelChanged($event)"
       (blur)="onTouched()">
-      <option *ngIf="placeholder" value="" disabled selected>{{ placeholder }}</option>
-      <option *ngFor="let opt of options" [value]="getOptionValue(opt)">
+      <option *ngIf="placeholder" [ngValue]="''" disabled>{{ placeholder }}</option>
+      <option *ngFor="let opt of options" [ngValue]="getOptionValue(opt)">
         {{ getOptionLabel(opt) }}
       </option>
     </select>

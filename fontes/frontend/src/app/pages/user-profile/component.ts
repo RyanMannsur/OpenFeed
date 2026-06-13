@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 import { ArticleService } from '../../services/article/service';
+import { AuthService } from '../../core/services/auth.service';
 import { DummyArticle, ArticleCardAction } from '../../shared/types/article';
 import { DateUtil } from '../../shared/utils/date.util';
 import { ToastService } from '../../core/services/toast.service';
@@ -51,6 +52,7 @@ export class UserProfileComponent implements OnInit {
     private router: Router,
     private location: Location,
     private articleService: ArticleService,
+    private authService: AuthService,
     private cdr: ChangeDetectorRef,
     private toastService: ToastService
   ) {}
@@ -69,14 +71,52 @@ export class UserProfileComponent implements OnInit {
 
   loadUserData() {
     if (this.isCurrentUser) {
-      this.user.name = 'Meu Usuário';
+      this.articleService.getUserProfile().subscribe({
+        next: (profile) => {
+          this.user.name = profile.nome ?? 'Meu Usuário';
+          this.user.about = profile.bio ?? 'Sem biografia ainda.';
+          this.user.rating = Number(profile.media_nota ?? 0);
+          this.user.photoUrl = profile.avatar_url ? this.resolveImageUrl(profile.avatar_url) : '/img/placeholder-image.jpg';
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          console.error(err);
+          this.user.name = this.authService.getCurrentUser()?.name ?? 'Meu Usuário';
+        }
+      });
     } else {
-      this.user.name = 'Usuário Visitado';
+      const id = Number(this.route.snapshot.paramMap.get('id'));
+      if (Number.isFinite(id)) {
+        this.articleService.getPublicUserProfile(id).subscribe({
+          next: (profile) => {
+            this.user.name = profile.nome ?? 'Usuário Visitado';
+            this.user.about = profile.bio ?? 'Sem biografia ainda.';
+            this.user.rating = Number(profile.media_nota ?? 0);
+            this.user.photoUrl = profile.avatar_url ? this.resolveImageUrl(profile.avatar_url) : '/img/placeholder-image.jpg';
+            this.cdr.markForCheck();
+          },
+          error: (err) => {
+            console.error(err);
+          }
+        });
+      }
     }
   }
 
+  private resolveImageUrl(imageUrl: string): string {
+    if (!imageUrl) return '/img/placeholder-image.jpg';
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://') || imageUrl.startsWith('data:')) {
+      return imageUrl;
+    }
+    return `http://localhost:3000${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
+  }
+
   loadArticles() {
-    this.articleService.getArticles(this.currentPage, this.pageSize, {}).subscribe(result => {
+    const source$ = this.isCurrentUser
+      ? this.articleService.getMyArticles(this.currentPage, this.pageSize)
+      : this.articleService.getArticles(this.currentPage, this.pageSize, {});
+
+    source$.subscribe(result => {
       this.articles = result.data;
       this.totalItems = result.total;
       this.cdr.markForCheck();
@@ -118,12 +158,12 @@ export class UserProfileComponent implements OnInit {
   }
 
   onCardClick(article: DummyArticle) {
-    void this.router.navigate(['/article-read/1']);
+    void this.router.navigate([`/article-read/${article.id}`]);
   }
 
   onArticleAction(action: ArticleCardAction, article: DummyArticle) {
     if (action.id === 'edit') {
-      void this.router.navigate(['/article-edit/1']);
+      void this.router.navigate([`/article-edit/${article.id}`]);
     }
   }
 }

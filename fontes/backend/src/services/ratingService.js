@@ -1,0 +1,1 @@
+export { darNota, getNota } from './notaService.js';

@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 
 import { InputComponent } from '../../components/input/component';
 import { SelectComponent } from '../../components/select/component';
 import { ButtonComponent } from '../../components/button/component';
 import { ModalComponent } from '../../components/modal/component';
 import { ToastService } from '../../core/services/toast.service';
+import { ArticleService } from '../../services/article/service';
 
 @Component({
   selector: 'app-article-edit',
@@ -24,9 +26,16 @@ import { ToastService } from '../../core/services/toast.service';
   styleUrls: ['./styles.css']
 })
 export class ArticleEditComponent implements OnInit {
+  articleId: number | null = null;
+  isLoading: boolean = true;
+  loadError: string = '';
   title: string = '';
   content: string = '';
   category: string = '';
+  imageFile: File | null = null;
+  imagePreviewUrl: string = '';
+  isPublishing: boolean = false;
+  publishError: string = '';
 
   categories = [
     { label: 'Tecnologia', value: 'tech' },
@@ -38,25 +47,80 @@ export class ArticleEditComponent implements OnInit {
   isPublishModalOpen: boolean = false;
 
   constructor(
-    private router: Router, 
+    private articleService: ArticleService,
+    private router: Router,
     private route: ActivatedRoute,
     private location: Location,
-    private toastService: ToastService
-  ) {}
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit() {
-    // Simular carregamento de dados do artigo
-    this.title = 'Artigo Mockado para Edição';
-    this.content = 'Este é o conteúdo mockado do artigo que estamos editando. Imagine que ele foi carregado do backend ao acessar a página.';
-    this.category = 'tech';
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+
+    if (!Number.isFinite(id) || id <= 0) {
+      this.isLoading = false;
+      this.loadError = 'Artigo inválido.';
+      this.toastService.showError('Artigo inválido.');
+      void this.router.navigate(['/home']);
+      return;
+    }
+
+    this.articleId = id;
+    this.loadArticle();
   }
 
   onGoBack() {
     this.location.back();
   }
 
-  onImageClick() {
-    console.log('Selecionar foto clicado');
+  loadArticle() {
+    if (!this.articleId) {
+      return;
+    }
+
+    this.isLoading = true;
+    this.loadError = '';
+
+    this.articleService.getArticleById(this.articleId).subscribe({
+      next: (article) => {
+        this.isLoading = false;
+        this.title = article.title ?? '';
+        this.content = article.content ?? '';
+        this.category = this.normalizeCategoryValue(article.category);
+        this.imagePreviewUrl = article.imageUrl || '';
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error(error);
+        this.isLoading = false;
+        this.loadError = 'Não foi possível carregar o artigo.';
+        this.toastService.showError(this.loadError);
+        this.cdr.detectChanges();
+        void this.router.navigate(['/home']);
+      }
+    });
+  }
+
+  onImageClick(fileInput: HTMLInputElement) {
+    fileInput.click();
+  }
+
+  onImageSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+
+    if (!file) {
+      return;
+    }
+
+    this.imageFile = file;
+
+    if (this.imagePreviewUrl) {
+      URL.revokeObjectURL(this.imagePreviewUrl);
+    }
+
+    this.imagePreviewUrl = URL.createObjectURL(file);
   }
 
   openPublishModal() {
@@ -67,10 +131,75 @@ export class ArticleEditComponent implements OnInit {
     this.isPublishModalOpen = false;
   }
 
-  confirmPublish() {
-    this.isPublishModalOpen = false;
-    this.toastService.showSuccess('Artigo atualizado com sucesso!');
-    console.log('Artigo editado:', { title: this.title, content: this.content, category: this.category });
-    void this.router.navigate(['/home']);
+  async confirmPublish() {
+    if (!this.articleId || this.isPublishing) {
+      return;
+    }
+
+    if (!this.title.trim() || !this.content.trim() || !this.category.trim()) {
+      this.toastService.showError('Preencha título, conteúdo e categoria antes de salvar.');
+      return;
+    }
+
+    this.isPublishing = true;
+    this.publishError = '';
+
+    try {
+      let imageUrl: string | undefined;
+
+      if (this.imageFile) {
+        imageUrl = await firstValueFrom(this.articleService.uploadArticleImage(this.imageFile));
+      }
+
+      await firstValueFrom(this.articleService.updateArticle(this.articleId, {
+        title: this.title,
+        content: this.content,
+        category: this.category,
+        imageUrl: imageUrl ?? this.imagePreviewUrl ?? undefined
+      }));
+
+      this.toastService.showSuccess('Artigo atualizado com sucesso!');
+      this.isPublishModalOpen = false;
+      await this.router.navigate(['/home']);
+    } catch (error) {
+      this.publishError = this.extractErrorMessage(error, 'Não foi possível atualizar o artigo.');
+      this.toastService.showError(this.publishError);
+      console.error(error);
+    } finally {
+      this.isPublishing = false;
+    }
+  }
+
+  private extractErrorMessage(error: unknown, fallback: string): string {
+    if (typeof error === 'object' && error !== null && 'error' in error) {
+      const responseError = (error as { error?: { message?: string } }).error;
+      if (responseError?.message) {
+        return responseError.message;
+      }
+    }
+
+    if (error instanceof Error && error.message) {
+      return error.message;
+    }
+
+    return fallback;
+  }
+
+  private normalizeCategoryValue(category: string): string {
+    const normalized = category?.toLowerCase?.() ?? '';
+
+    const categoryMap: Record<string, string> = {
+      tecnologia: 'tech',
+      tech: 'tech',
+      esportes: 'sports',
+      sports: 'sports',
+      política: 'politics',
+      politica: 'politics',
+      politics: 'politics',
+      entretenimento: 'entertainment',
+      entertainment: 'entertainment'
+    };
+
+    return categoryMap[normalized] ?? normalized;
   }
 }

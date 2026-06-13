@@ -36,6 +36,12 @@ export class SelectComponent implements ControlValueAccessor {
     }
   }
 
+  onModelChanged(value: any): void {
+    this.value = value;
+    this.onChange(this.value);
+    this.onTouched();
+  }
+
   registerOnChange(fn: any): void {
     this.onChange = fn;
   }
@@ -46,12 +52,6 @@ export class SelectComponent implements ControlValueAccessor {
 
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
-  }
-
-  onInputChanged(event: any) {
-    this.value = event.target.value;
-    this.onChange(this.value);
-    this.onTouched();
   }
 
   getOptionLabel(opt: any): string {

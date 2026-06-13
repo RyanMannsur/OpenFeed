@@ -18,9 +18,10 @@
 
   <div class="row justify-content-center">
     <div class="col-md-5 mb-4">
-      <!-- Upload Placeholder -->
-      <div class="upload-placeholder d-flex justify-content-center align-items-center bg-light rounded cursor-pointer" (click)="onImageClick()">
-        <span class="material-icons text-muted" style="font-size: 80px;">image</span>
+      <input #imageInput type="file" accept="image/*" class="d-none" (change)="onImageSelected($event)">
+      <div class="upload-placeholder d-flex justify-content-center align-items-center bg-light rounded cursor-pointer position-relative overflow-hidden" (click)="onImageClick(imageInput)">
+        <img *ngIf="imagePreviewUrl" [src]="imagePreviewUrl" alt="Pré-visualização da imagem" class="w-100 h-100 object-fit-cover">
+        <span *ngIf="!imagePreviewUrl" class="material-icons text-muted" style="font-size: 80px;">image</span>
       </div>
     </div>
     
@@ -37,13 +38,16 @@
   <div class="row justify-content-center mt-4">
     <div class="col-md-10 d-flex justify-content-end gap-3">
       <app-button variant="outline" (click)="onGoBack()">Voltar</app-button>
-      <app-button variant="dark" (click)="openPublishModal()">Publicar</app-button>
+      <app-button variant="dark" (click)="openPublishModal()" [disabled]="isPublishing">Publicar</app-button>
     </div>
   </div>
 </div>
 
 <!-- Modal Publicar -->
 <app-modal [isOpen]="isPublishModalOpen" title="Publicar?" text="Deseja publicar este novo artigo?" (onClose)="closePublishModal()">
+  <div *ngIf="publishError" class="alert alert-danger mb-3 py-2">
+    {{ publishError }}
+  </div>
   <div footer class="d-flex justify-content-end gap-2 w-100">
     <app-button variant="outline" (click)="closePublishModal()">Cancelar</app-button>
     <app-button variant="dark" (click)="confirmPublish()">Publicar</app-button>
