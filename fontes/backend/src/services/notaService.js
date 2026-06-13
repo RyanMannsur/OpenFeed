@@ -1,6 +1,7 @@
 import * as notaRepository from '../repositories/notaRepository.js';
 import * as agendadorRepository from '../repositories/agendadorRepository.js';
 import * as artigoRepository from '../repositories/artigoRepository.js';
+import { executarRecalculo } from '../jobs/recalculoJob.js';
 
 export async function darNota({ usuarioId, artigoId, valor }) {
   if (!valor || valor < 1 || valor > 5) {
@@ -19,7 +20,16 @@ export async function darNota({ usuarioId, artigoId, valor }) {
   const notaId = await notaRepository.upsert({ usuarioId, artigoId, valor });
   await agendadorRepository.registrar({ notaId, artigoId });
 
-  return { mensagem: 'Nota registrada com sucesso. A média será atualizada em breve.' };
+  // Dispara o recálculo imediato de forma assíncrona
+  setImmediate(async () => {
+    try {
+      await executarRecalculo();
+    } catch (err) {
+      console.error('[Background Recalculate] Erro ao recalcular notas:', err.message);
+    }
+  });
+
+  return { mensagem: 'Nota registrada com sucesso. A média foi atualizada.' };
 }
 
 export async function getNota({ usuarioId, artigoId }) {

@@ -71,10 +71,44 @@ export class UserProfileComponent implements OnInit {
 
   loadUserData() {
     if (this.isCurrentUser) {
-      this.user.name = this.authService.getCurrentUser()?.name ?? 'Meu Usuário';
+      this.articleService.getUserProfile().subscribe({
+        next: (profile) => {
+          this.user.name = profile.nome ?? 'Meu Usuário';
+          this.user.about = profile.bio ?? 'Sem biografia ainda.';
+          this.user.rating = Number(profile.media_nota ?? 0);
+          this.user.photoUrl = profile.avatar_url ? this.resolveImageUrl(profile.avatar_url) : '/img/placeholder-image.jpg';
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          console.error(err);
+          this.user.name = this.authService.getCurrentUser()?.name ?? 'Meu Usuário';
+        }
+      });
     } else {
-      this.user.name = 'Usuário Visitado';
+      const id = Number(this.route.snapshot.paramMap.get('id'));
+      if (Number.isFinite(id)) {
+        this.articleService.getPublicUserProfile(id).subscribe({
+          next: (profile) => {
+            this.user.name = profile.nome ?? 'Usuário Visitado';
+            this.user.about = profile.bio ?? 'Sem biografia ainda.';
+            this.user.rating = Number(profile.media_nota ?? 0);
+            this.user.photoUrl = profile.avatar_url ? this.resolveImageUrl(profile.avatar_url) : '/img/placeholder-image.jpg';
+            this.cdr.markForCheck();
+          },
+          error: (err) => {
+            console.error(err);
+          }
+        });
+      }
     }
+  }
+
+  private resolveImageUrl(imageUrl: string): string {
+    if (!imageUrl) return '/img/placeholder-image.jpg';
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://') || imageUrl.startsWith('data:')) {
+      return imageUrl;
+    }
+    return `http://localhost:3000${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
   }
 
   loadArticles() {

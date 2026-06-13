@@ -208,13 +208,41 @@ export class ArticleService {
     );
   }
 
+  getArticleRating(id: number): Observable<{ tipo: string; valor: number }> {
+    return this.http.get<{ success: boolean; data: { tipo: string; valor: number } }>(`${environment.apiUrl}/artigos/${id}/nota`).pipe(
+      map((response) => response.data)
+    );
+  }
+
+  rateArticle(id: number, valor: number): Observable<{ success: boolean; message: string }> {
+    return this.http.post<{ success: boolean; message: string }>(`${environment.apiUrl}/artigos/${id}/nota`, { valor });
+  }
+
+  getUserProfile(): Observable<{ id: number; nome: string; bio: string; avatar_url: string; media_nota: number; nota: number }> {
+    return this.http.get<{ success: boolean; data: { id: number; nome: string; bio: string; avatar_url: string; media_nota: number; nota?: number } }>(`${environment.apiUrl}/usuarios/perfil`).pipe(
+      map((response) => ({
+        ...response.data,
+        media_nota: Number(response.data.nota ?? response.data.media_nota ?? 0)
+      }))
+    );
+  }
+
+  getPublicUserProfile(id: number): Observable<{ id: number; nome: string; bio: string; avatar_url: string; media_nota: number; nota: number }> {
+    return this.http.get<{ success: boolean; data: { id: number; nome: string; bio: string; avatar_url: string; media_nota: number; nota?: number } }>(`${environment.apiUrl}/usuarios/${id}`).pipe(
+      map((response) => ({
+        ...response.data,
+        media_nota: Number(response.data.nota ?? response.data.media_nota ?? 0)
+      }))
+    );
+  }
+
   private mapArticle(article: BackendArticle | BackendSingleArticleResponse): DummyArticle {
     const rawCategory = article.categoria ?? article.category ?? '';
     const normalizedCategory = this.normalizeCategory(rawCategory);
     const rawTitle = article.titulo ?? article.title ?? '';
     const rawContent = article.conteudo ?? article.content ?? '';
     const rawSummary = article.resumo ?? article.summary ?? null;
-    const rawRating = article.media_notas ?? article.rating ?? 0;
+    const rawRating = article.nota ?? article.media_notas ?? article.rating ?? 0;
     const rawImageUrl = article.image_url ?? article.imageUrl ?? '';
     const rawAuthorId = article.autor_id ?? article.authorId;
     const rawAuthor = article.autor_nome ?? article.author ?? 'OpenFeed';

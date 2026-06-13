@@ -7,11 +7,12 @@
           <span class="material-icons text-muted placeholder-icon">image</span>
         </div>
       </div>
-      <div class="mt-2 d-flex justify-content-between px-1">
-        <div class="d-flex flex-column align-items-center">
-          <app-rating [maxStars]="5" [(ngModel)]="rating" [readonly]="false"></app-rating>
-        </div>
-      </div>
+       <div class="mt-2 d-flex justify-content-between align-items-center px-1">
+         <div class="d-flex align-items-center gap-2">
+           <app-rating [maxStars]="5" [(ngModel)]="rating" [readonly]="true"></app-rating>
+           <small class="text-muted fw-bold">({{ rating | number:'1.1-1' }})</small>
+         </div>
+       </div>
     </div>
 
     <div class="col-md-6 ps-md-2 d-flex flex-column">

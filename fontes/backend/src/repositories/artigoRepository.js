@@ -11,7 +11,7 @@ function mapArtigo(row) {
     content: row.conteudo,
     summary: row.resumo,
     category: row.categoria,
-    rating: Number(row.media_notas ?? 0),
+    rating: Number(row.nota ?? row.media_notas ?? 0),
     imageUrl: row.imageUrl ?? row.image_url ?? null,
     authorId: row.autor_id,
     author: row.autor_nome,
@@ -45,14 +45,14 @@ export async function findAll({ search, categoria, minNota, limit = 10, offset =
     params.push(w, w, w);
   }
 
-  if (categoria && categoria !== 'Todos' && categoria !== 'Todas') {
+  if (categoria && categoryLabelMapping(categoria)) {
     query += ' AND a.categoria = ?';
     params.push(categoria);
   }
 
   if (minNota !== undefined && minNota !== null) {
-    query += ' AND a.media_notas >= ?';
-    params.push(minNota);
+    query += ' AND (a.nota >= ? OR a.media_notas >= ?)';
+    params.push(minNota, minNota);
   }
 
   query += ' ORDER BY a.criado_em DESC LIMIT ? OFFSET ?';
@@ -60,6 +60,10 @@ export async function findAll({ search, categoria, minNota, limit = 10, offset =
 
   const [rows] = await pool.query(query, params);
   return rows.map(mapArtigo);
+}
+
+function categoryLabelMapping(categoria) {
+  return categoria && categoria !== 'Todos' && categoria !== 'Todas';
 }
 
 export async function countAll({ search, categoria, minNota }) {
@@ -72,14 +76,14 @@ export async function countAll({ search, categoria, minNota }) {
     params.push(w, w, w);
   }
 
-  if (categoria && categoria !== 'Todos' && categoria !== 'Todas') {
+  if (categoria && categoryLabelMapping(categoria)) {
     query += ' AND a.categoria = ?';
     params.push(categoria);
   }
 
   if (minNota !== undefined && minNota !== null) {
-    query += ' AND a.media_notas >= ?';
-    params.push(minNota);
+    query += ' AND (a.nota >= ? OR a.media_notas >= ?)';
+    params.push(minNota, minNota);
   }
 
   const [rows] = await pool.query(query, params);
@@ -124,8 +128,8 @@ export async function deleteById(id) {
 
 export async function updateMediaNotas(id, media) {
   const [result] = await pool.query(
-    'UPDATE artigos SET media_notas = ? WHERE id = ?',
-    [media, id]
+    'UPDATE artigos SET media_notas = ?, nota = ? WHERE id = ?',
+    [media, media, id]
   );
   return result.affectedRows > 0;
 }

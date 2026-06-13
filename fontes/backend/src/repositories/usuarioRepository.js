@@ -7,7 +7,7 @@ export async function findByEmail(email) {
 
 export async function findById(id) {
   const [rows] = await pool.query(
-    'SELECT id, nome, email, bio, avatar_url, media_nota, criado_em, atualizado_em FROM usuarios WHERE id = ?',
+    'SELECT id, nome, email, bio, avatar_url, media_nota, nota, criado_em, atualizado_em FROM usuarios WHERE id = ?',
     [id]
   );
   return rows[0] || null;
@@ -39,8 +39,8 @@ export async function updateSenha(id, senhaHash) {
 
 export async function updateMediaNota(id, media) {
   const [result] = await pool.query(
-    'UPDATE usuarios SET media_nota = ? WHERE id = ?',
-    [media, id]
+    'UPDATE usuarios SET media_nota = ?, nota = ? WHERE id = ?',
+    [media, media, id]
   );
   return result.affectedRows > 0;
 }

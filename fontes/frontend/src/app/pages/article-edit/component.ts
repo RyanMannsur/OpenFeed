@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -51,7 +51,8 @@ export class ArticleEditComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private location: Location,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -88,12 +89,14 @@ export class ArticleEditComponent implements OnInit {
         this.content = article.content ?? '';
         this.category = this.normalizeCategoryValue(article.category);
         this.imagePreviewUrl = article.imageUrl || '';
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error(error);
         this.isLoading = false;
         this.loadError = 'Não foi possível carregar o artigo.';
         this.toastService.showError(this.loadError);
+        this.cdr.detectChanges();
         void this.router.navigate(['/home']);
       }
     });

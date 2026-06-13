@@ -4,7 +4,7 @@ import * as notaRepository from '../repositories/notaRepository.js';
 import * as artigoRepository from '../repositories/artigoRepository.js';
 import * as usuarioRepository from '../repositories/usuarioRepository.js';
 
-async function executarRecalculo() {
+export async function executarRecalculo() {
   const pendentes = await agendadorRepository.listarPendentes();
 
   if (pendentes.length === 0) {
