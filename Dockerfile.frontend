@@ -1,0 +1,26 @@
+# syntax=docker/dockerfile:1
+# Dockerfile.frontend — Angular SSR para deploy no Render
+
+FROM node:22-alpine AS deps
+WORKDIR /app
+COPY fontes/frontend/package*.json ./
+RUN npm install
+
+FROM deps AS build
+COPY fontes/frontend ./
+RUN npm run build
+
+FROM node:22-alpine AS runtime
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+COPY fontes/frontend/package*.json ./
+COPY --from=deps /app/node_modules ./node_modules
+RUN npm prune --omit=dev
+
+COPY --from=build /app/dist/frontend ./dist/frontend
+
+EXPOSE 4000
+
+CMD ["node", "dist/frontend/server/server.mjs"]
