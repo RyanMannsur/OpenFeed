@@ -5,7 +5,7 @@
 FROM node:22-alpine AS frontend-builder
 WORKDIR /app
 COPY fontes/frontend/package*.json ./
-RUN npm ci
+RUN npm install
 COPY fontes/frontend/ ./
 RUN npm run build
 
