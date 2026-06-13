@@ -29,6 +29,9 @@ COPY fontes/backend/ .
 # Copia os arquivos de browser compilados do frontend para a pasta pública do backend
 COPY --from=frontend-builder /app/dist/frontend/browser ./public/frontend
 
+# Renomeia index.csr.html para index.html para que o Express consiga servir o site corretamente
+RUN cp ./public/frontend/index.csr.html ./public/frontend/index.html || true
+
 EXPOSE 3000
 
 CMD ["node", "server.js"]
