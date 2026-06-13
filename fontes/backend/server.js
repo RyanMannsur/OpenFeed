@@ -1,12 +1,13 @@
 import app from './src/app.js';
 import { testConnection } from './src/config/database.js';
+import { initDatabase } from './src/config/initDatabase.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 
-async function aguardarBanco({ tentativas = 10, intervaloMs = 2000 } = {}) {
+async function aguardarBanco({ tentativas = 15, intervaloMs = 3000 } = {}) {
   for (let tentativa = 1; tentativa <= tentativas; tentativa += 1) {
     const conectou = await testConnection();
 
@@ -30,6 +31,9 @@ async function startServer() {
 
   if (!isDbConnected) {
     console.warn('⚠️ Conexão com o banco falhou. Os endpoints que utilizam o banco de dados falharão até o MySQL estar acessível.');
+  } else {
+    // Aplica o schema automaticamente (cria tabelas se não existirem)
+    await initDatabase();
   }
 
   app.listen(PORT, () => {
@@ -37,7 +41,6 @@ async function startServer() {
     console.log(`🔗 Acesso local: http://localhost:${PORT}`);
     console.log(`📡 Health Check: http://localhost:${PORT}/api/health`);
   });
-
 }
 
 startServer();

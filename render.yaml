@@ -1,13 +1,50 @@
 services:
+  # ─── Backend Node.js ─────────────────────────────────────────────────────────
+  - type: web
+    name: openfeed-backend
+    runtime: docker
+    plan: free
+    region: oregon
+    branch: main
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DB_HOST
+        value: openfeeddados-openfeeddados.a.aivencloud.com
+      - key: DB_PORT
+        value: 25755
+      - key: DB_USER
+        value: avnadmin
+      - key: DB_NAME
+        value: defaultdb
+      - key: DB_SSL
+        value: "true"
+      # Configurar manualmente no dashboard do Render (Environment > Secret Files)
+      - key: DB_PASS
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: 1d
+
+  # ─── Frontend Angular SSR ────────────────────────────────────────────────────
   - type: web
     name: openfeed-frontend
     runtime: docker
     plan: free
     region: oregon
     branch: main
-    dockerfilePath: ./Dockerfile
+    dockerfilePath: ./Dockerfile.frontend
     healthCheckPath: /
     autoDeploy: true
     envVars:
       - key: NODE_ENV
         value: production
+      # Preencher após o deploy do backend com a URL gerada pelo Render
+      - key: API_URL
+        sync: false

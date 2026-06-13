@@ -1,26 +1,19 @@
 # syntax=docker/dockerfile:1
+# Dockerfile raiz — Backend Node.js para deploy no Render
 
 FROM node:22-alpine AS deps
-WORKDIR /app/fontes/frontend
-
-COPY fontes/frontend/package*.json ./
-RUN npm install
-
-FROM deps AS build
-COPY fontes/frontend ./
-RUN npm run build
+WORKDIR /app
+COPY fontes/backend/package*.json ./
+RUN npm ci --omit=dev
 
 FROM node:22-alpine AS runtime
-WORKDIR /app/fontes/frontend
+WORKDIR /app
 
 ENV NODE_ENV=production
 
-COPY fontes/frontend/package*.json ./
-COPY --from=deps /app/fontes/frontend/node_modules ./node_modules
-RUN npm prune --omit=dev
+COPY --from=deps /app/node_modules ./node_modules
+COPY fontes/backend/ .
 
-COPY --from=build /app/fontes/frontend/dist/frontend ./dist/frontend
-COPY fontes/frontend/public ./public
+EXPOSE 3000
 
-EXPOSE 4000
-CMD ["node", "dist/frontend/server/server.mjs"]
+CMD ["node", "server.js"]
