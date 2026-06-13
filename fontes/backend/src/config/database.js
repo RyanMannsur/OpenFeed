@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const isSSL = process.env.DB_SSL === 'true';
+
 // Configura o pool de conexões
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
@@ -10,12 +12,15 @@ const dbConfig = {
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASS || '',
   database: process.env.DB_NAME || 'openfeed_db',
-  // SSL necessário para provedores externos (Aiven, PlanetScale, etc.)
-  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : undefined,
+  // SSL obrigatório para provedores externos como Aiven
+  ssl: isSSL ? { rejectUnauthorized: false } : undefined,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+  connectTimeout: 10000
 };
+
+console.log(`[DB] Conectando em ${dbConfig.host}:${dbConfig.port} (SSL: ${isSSL}) DB: ${dbConfig.database}`);
 
 const pool = mysql.createPool(dbConfig);
 
@@ -27,8 +32,10 @@ export async function testConnection() {
     connection.release();
     return true;
   } catch (error) {
-    console.error('❌ Erro ao conectar ao banco de dados MySQL:', error.message);
-    console.error('Certifique-se de que o servidor MySQL está rodando e que as credenciais no arquivo .env estão corretas.');
+    console.error('❌ Erro ao conectar ao banco de dados MySQL:');
+    console.error('   Código:', error.code);
+    console.error('   Mensagem:', error.message);
+    console.error('   Host:', dbConfig.host, '| Porta:', dbConfig.port, '| User:', dbConfig.user, '| DB:', dbConfig.database);
     return false;
   }
 }
