@@ -12,22 +12,16 @@
   </div>
 
   <div class="row justify-content-center mb-4" *ngIf="!isLoading && !loadError">
-    <div class="col-md-4">
-      <app-select 
-        label="Categoria" 
-        placeholder="Selecione..." 
-        [options]="categories" 
-        labelKey="label" 
-        valueKey="value"
-        [(ngModel)]="category">
-      </app-select>
+    <div class="col-md-4 text-center">
+      <div class="badge bg-secondary px-3 py-2 fs-6">
+        Categoria: {{ normalizeCategoryValue(category) | uppercase }}
+      </div>
     </div>
   </div>
 
   <div class="row justify-content-center" *ngIf="!isLoading && !loadError">
     <div class="col-md-5 mb-4">
-      <input #imageInput type="file" accept="image/*" class="d-none" (change)="onImageSelected($event)">
-      <div class="upload-placeholder d-flex justify-content-center align-items-center bg-light rounded cursor-pointer position-relative overflow-hidden" (click)="onImageClick(imageInput)">
+      <div class="upload-placeholder d-flex justify-content-center align-items-center bg-light rounded position-relative overflow-hidden">
         <img *ngIf="imagePreviewUrl" [src]="imagePreviewUrl" alt="Pré-visualização da imagem" class="w-100 h-100 object-fit-cover">
         <span *ngIf="!imagePreviewUrl" class="material-icons text-muted" style="font-size: 80px;">image</span>
       </div>

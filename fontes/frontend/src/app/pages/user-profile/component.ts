@@ -148,9 +148,21 @@ export class UserProfileComponent implements OnInit {
   }
 
   onSaveAbout() {
-    this.user.about = this.tempAbout;
-    this.isEditingAbout = false;
-    this.toastService.showSuccess('Sobre atualizado com sucesso!');
+    this.articleService.updateProfile({
+      nome: this.user.name,
+      bio: this.tempAbout
+    }).subscribe({
+      next: () => {
+        this.user.about = this.tempAbout;
+        this.isEditingAbout = false;
+        this.toastService.showSuccess('Sobre atualizado com sucesso!');
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error(err);
+        this.toastService.showError('Não foi possível salvar a biografia.');
+      }
+    });
   }
 
   onCancelAbout() {
