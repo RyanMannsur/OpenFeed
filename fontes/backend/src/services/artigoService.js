@@ -1,15 +1,16 @@
 import * as artigoRepository from '../repositories/artigoRepository.js';
 import { normalizarCaminhoImagem } from '../utils/imagePath.js';
 
-export async function listar({ search, categoria, minNota, page = 1, limit = 10 }) {
+export async function listar({ search, categoria, minNota, maxNota, startDate, endDate, page = 1, limit = 10 }) {
   const parsedPage = parseInt(page, 10);
   const parsedLimit = parseInt(limit, 10);
   const offset = (parsedPage - 1) * parsedLimit;
-  const minNotaVal = minNota ? parseFloat(minNota) : undefined;
+  const minNotaVal = (minNota !== undefined && minNota !== null && minNota !== '') ? parseFloat(minNota) : undefined;
+  const maxNotaVal = (maxNota !== undefined && maxNota !== null && maxNota !== '') ? parseFloat(maxNota) : undefined;
 
   const [artigos, total] = await Promise.all([
-    artigoRepository.findAll({ search, categoria, minNota: minNotaVal, limit: parsedLimit, offset }),
-    artigoRepository.countAll({ search, categoria, minNota: minNotaVal })
+    artigoRepository.findAll({ search, categoria, minNota: minNotaVal, maxNota: maxNotaVal, startDate, endDate, limit: parsedLimit, offset }),
+    artigoRepository.countAll({ search, categoria, minNota: minNotaVal, maxNota: maxNotaVal, startDate, endDate })
   ]);
 
   return {
@@ -51,7 +52,7 @@ export async function criar({ titulo, conteudo, resumo, categoria, imageUrl }, a
   return await artigoRepository.findById(artigoId);
 }
 
-export async function atualizar(id, { titulo, conteudo, resumo, categoria, imageUrl }, usuarioId) {
+export async function atualizar(id, { titulo, conteudo }, usuarioId) {
   const artigo = await artigoRepository.findById(id);
   if (!artigo) {
     const err = new Error('Artigo não encontrado.');
@@ -59,18 +60,19 @@ export async function atualizar(id, { titulo, conteudo, resumo, categoria, image
     throw err;
   }
 
-  if (artigo.autor_id !== usuarioId) {
+  console.error('PERM CHECK UPDATE: artigo.authorId =', artigo.authorId, 'type =', typeof artigo.authorId, '| usuarioId =', usuarioId, 'type =', typeof usuarioId);
+  if (Number(artigo.authorId) !== Number(usuarioId)) {
     const err = new Error('Acesso negado. Você não tem permissão para editar este artigo.');
     err.statusCode = 403;
     throw err;
   }
 
   await artigoRepository.update(id, {
-    titulo: titulo || artigo.titulo,
-    conteudo: conteudo || artigo.conteudo,
-    resumo: resumo !== undefined ? resumo : artigo.resumo,
-    categoria: categoria || artigo.categoria,
-    imageUrl: imageUrl !== undefined ? normalizarCaminhoImagem(imageUrl) : artigo.image_url
+    titulo: titulo || artigo.title,
+    conteudo: conteudo || artigo.content,
+    resumo: artigo.summary,
+    categoria: artigo.category,
+    imageUrl: artigo.imageUrl
   });
 
   return await artigoRepository.findById(id);
@@ -84,7 +86,8 @@ export async function deletar(id, usuarioId) {
     throw err;
   }
 
-  if (artigo.autor_id !== usuarioId) {
+  console.error('PERM CHECK DELETE: artigo.authorId =', artigo.authorId, 'type =', typeof artigo.authorId, '| usuarioId =', usuarioId, 'type =', typeof usuarioId);
+  if (Number(artigo.authorId) !== Number(usuarioId)) {
     const err = new Error('Acesso negado. Você não tem permissão para excluir este artigo.');
     err.statusCode = 403;
     throw err;
