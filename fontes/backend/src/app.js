@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/img', express.static(path.join(process.cwd(), 'public', 'img')));
 
 // Servir arquivos estáticos do frontend Angular
-const frontendPath = path.join(process.cwd(), 'public', 'frontend');
+const frontendPath = path.join(process.cwd(), 'fontes', 'frontend', 'dist', 'frontend');
 app.use(express.static(frontendPath));
 
 // Acopla todas as rotas da API sob o prefixo '/api'
