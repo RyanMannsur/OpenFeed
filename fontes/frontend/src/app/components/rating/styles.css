@@ -9,4 +9,6 @@
 }
 .rating-container.readonly .star-icon {
     cursor: default;
+    pointer-events: none;
+    user-select: none;
 }
