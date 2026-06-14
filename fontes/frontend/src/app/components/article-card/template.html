@@ -9,7 +9,7 @@
       </div>
       <div class="mt-2 d-flex justify-content-between align-items-center px-1" (click)="$event.stopPropagation()">
         <div class="d-flex align-items-center gap-2">
-          <app-rating [maxStars]="5" [(ngModel)]="rating" [readonly]="true"></app-rating>
+          <app-rating [maxStars]="5" [ngModel]="rating" [readonly]="true"></app-rating>
           <small class="text-muted fw-bold">({{ rating | number:'1.1-1' }})</small>
         </div>
       </div>

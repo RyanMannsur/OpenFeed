@@ -3,7 +3,7 @@ import path from 'path';
 import crypto from 'crypto';
 import sharp from 'sharp';
 
-const ARTICLE_IMAGE_DIR = path.join(process.cwd(), 'public', 'img', 'artigos');
+const ARTICLE_IMAGE_DIR = process.env.IMAGE_DIR || path.join(process.cwd(), 'public', 'img', 'artigos');
 
 export async function uploadArticleImage(req, res, next) {
   try {

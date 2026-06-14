@@ -29,8 +29,13 @@ services:
         sync: false
       - key: JWT_SECRET
         sync: false
-      - key: JWT_EXPIRES_IN
-        value: 1d
+      - key: IMAGE_DIR
+        value: /app/public/img/artigos
+
+    disk:
+      name: img-disk
+      mountPath: /app/public/img/artigos
+      sizeGB: 10
 
   # ─── Frontend Angular SSR ────────────────────────────────────────────────────
   - type: web
