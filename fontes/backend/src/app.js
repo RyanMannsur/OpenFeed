@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/img', express.static(path.join(process.cwd(), 'public', 'img')));
 
 // Servir arquivos estáticos do frontend Angular (versão cliente)
-const frontendStaticPath = path.join(process.cwd(), 'fontes', 'frontend', 'dist', 'frontend', 'browser');
+const frontendStaticPath = path.join(process.cwd(), 'public', 'frontend');
 app.use(express.static(frontendStaticPath));
 
 // Acopla todas as rotas da API sob o prefixo '/api'
@@ -46,12 +46,12 @@ app.get('/api-info', (req, res) => {
   });
 });
 
-// Qualquer outra rota não-API deve servir o index CSR do Angular (SPA)
+// Qualquer outra rota não-API deve servir o index.html do Angular (SPA)
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api') || req.path.startsWith('/img')) {
     return next();
   }
-  res.sendFile(path.join(frontendStaticPath, 'index.csr.html'));
+  res.sendFile(path.join(frontendStaticPath, 'index.html'));
 });
 
 // Middleware para tratamento de rotas não encontradas (404)
