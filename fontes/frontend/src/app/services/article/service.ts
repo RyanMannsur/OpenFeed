@@ -122,8 +122,20 @@ export class ArticleService {
       params = params.set('categoria', filter.category);
     }
 
-    if (filter?.minRating !== undefined) {
+    if (filter?.minRating !== undefined && filter.minRating > 0) {
       params = params.set('minNota', filter.minRating);
+    }
+
+    if (filter?.maxRating !== undefined && filter.maxRating > 0) {
+      params = params.set('maxNota', filter.maxRating);
+    }
+
+    if (filter?.startDate) {
+      params = params.set('startDate', filter.startDate);
+    }
+
+    if (filter?.endDate) {
+      params = params.set('endDate', filter.endDate);
     }
 
     return this.http.get<{ success: boolean; data: BackendPaginatedArticlesResponse }>(`${environment.apiUrl}/artigos`, { params }).pipe(
@@ -183,13 +195,10 @@ export class ArticleService {
     );
   }
 
-  updateArticle(id: number, payload: { title: string; content: string; category: string; imageUrl?: string; summary?: string | null }): Observable<DummyArticle> {
+  updateArticle(id: number, payload: { title: string; content: string }): Observable<DummyArticle> {
     return this.http.put<{ success: boolean; data: BackendSingleArticleResponse }>(`${environment.apiUrl}/artigos/${id}`, {
       titulo: payload.title,
-      conteudo: payload.content,
-      categoria: payload.category,
-      resumo: payload.summary ?? null,
-      imageUrl: payload.imageUrl ?? null
+      conteudo: payload.content
     }).pipe(
       map((response) => this.mapArticle(response.data))
     );
@@ -228,6 +237,10 @@ export class ArticleService {
         nota: Number(response.data.nota ?? response.data.media_nota ?? 0)
       }))
     );
+  }
+
+  updateProfile(payload: { nome: string; bio: string; avatarUrl?: string }): Observable<any> {
+    return this.http.put<{ success: boolean; data: any }>(`${environment.apiUrl}/usuarios/perfil`, payload);
   }
 
   getPublicUserProfile(id: number): Observable<{ id: number; nome: string; bio: string; avatar_url: string; media_nota: number; nota: number }> {

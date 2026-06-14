@@ -30,7 +30,7 @@ export async function create({ titulo, conteudo, resumo, categoria, imageUrl, au
   return result.insertId;
 }
 
-export async function findAll({ search, categoria, minNota, limit = 10, offset = 0 }) {
+export async function findAll({ search, categoria, minNota, maxNota, startDate, endDate, limit = 10, offset = 0 }) {
   let query = `
     SELECT a.*, u.nome AS autor_nome, u.avatar_url AS autor_avatar
     FROM artigos a
@@ -55,6 +55,21 @@ export async function findAll({ search, categoria, minNota, limit = 10, offset =
     params.push(minNota, minNota);
   }
 
+  if (maxNota !== undefined && maxNota !== null) {
+    query += ' AND (a.nota <= ? OR a.media_notas <= ?)';
+    params.push(maxNota, maxNota);
+  }
+
+  if (startDate) {
+    query += ' AND a.criado_em >= ?';
+    params.push(startDate);
+  }
+
+  if (endDate) {
+    query += ' AND a.criado_em <= ?';
+    params.push(endDate + ' 23:59:59');
+  }
+
   query += ' ORDER BY a.criado_em DESC LIMIT ? OFFSET ?';
   params.push(parseInt(limit, 10), parseInt(offset, 10));
 
@@ -66,7 +81,7 @@ function categoryLabelMapping(categoria) {
   return categoria && categoria !== 'Todos' && categoria !== 'Todas';
 }
 
-export async function countAll({ search, categoria, minNota }) {
+export async function countAll({ search, categoria, minNota, maxNota, startDate, endDate }) {
   let query = 'SELECT COUNT(*) AS total FROM artigos a WHERE 1=1';
   const params = [];
 
@@ -84,6 +99,21 @@ export async function countAll({ search, categoria, minNota }) {
   if (minNota !== undefined && minNota !== null) {
     query += ' AND (a.nota >= ? OR a.media_notas >= ?)';
     params.push(minNota, minNota);
+  }
+
+  if (maxNota !== undefined && maxNota !== null) {
+    query += ' AND (a.nota <= ? OR a.media_notas <= ?)';
+    params.push(maxNota, maxNota);
+  }
+
+  if (startDate) {
+    query += ' AND a.criado_em >= ?';
+    params.push(startDate);
+  }
+
+  if (endDate) {
+    query += ' AND a.criado_em <= ?';
+    params.push(endDate + ' 23:59:59');
   }
 
   const [rows] = await pool.query(query, params);

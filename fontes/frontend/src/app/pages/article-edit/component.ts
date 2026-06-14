@@ -18,7 +18,6 @@ import { ArticleService } from '../../services/article/service';
     CommonModule,
     FormsModule,
     InputComponent,
-    SelectComponent,
     ButtonComponent,
     ModalComponent
   ],
@@ -136,8 +135,8 @@ export class ArticleEditComponent implements OnInit {
       return;
     }
 
-    if (!this.title.trim() || !this.content.trim() || !this.category.trim()) {
-      this.toastService.showError('Preencha título, conteúdo e categoria antes de salvar.');
+    if (!this.title.trim() || !this.content.trim()) {
+      this.toastService.showError('Preencha título e conteúdo antes de salvar.');
       return;
     }
 
@@ -145,17 +144,9 @@ export class ArticleEditComponent implements OnInit {
     this.publishError = '';
 
     try {
-      let imageUrl: string | undefined;
-
-      if (this.imageFile) {
-        imageUrl = await firstValueFrom(this.articleService.uploadArticleImage(this.imageFile));
-      }
-
       await firstValueFrom(this.articleService.updateArticle(this.articleId, {
         title: this.title,
-        content: this.content,
-        category: this.category,
-        imageUrl: imageUrl ?? this.imagePreviewUrl ?? undefined
+        content: this.content
       }));
 
       this.toastService.showSuccess('Artigo atualizado com sucesso!');
@@ -185,7 +176,7 @@ export class ArticleEditComponent implements OnInit {
     return fallback;
   }
 
-  private normalizeCategoryValue(category: string): string {
+  normalizeCategoryValue(category: string): string {
     const normalized = category?.toLowerCase?.() ?? '';
 
     const categoryMap: Record<string, string> = {

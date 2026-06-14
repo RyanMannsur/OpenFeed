@@ -74,12 +74,12 @@ export class HomeComponent implements OnInit {
 
   applyFilters() {
     this.filters = {
-      search: this.filterSearch,
-      category: this.filterCategory,
-      minRating: this.filterRating.min,
-      maxRating: this.filterRating.max,
-      startDate: this.filterStartDate,
-      endDate: this.filterEndDate
+      search: this.filterSearch || undefined,
+      category: this.filterCategory || undefined,
+      minRating: this.filterRating.min > 1 ? this.filterRating.min : undefined,
+      maxRating: this.filterRating.max < 5 ? this.filterRating.max : undefined,
+      startDate: this.filterStartDate || undefined,
+      endDate: this.filterEndDate || undefined
     };
     this.currentPage = 1;
     this.loadArticles();
